@@ -186,11 +186,15 @@ wss.on('connection', (ws) => {
       if (s !== ws && s.readyState === s.OPEN) {
         try {
           s.send(msg);
-        } catch {}
+        } catch { }
       }
     }
   });
   ws.on('close', () => sockets.delete(ws));
 });
+
+// server.listen(PORT, () => {
+//   console.log(`[sally-ui] listening on http://localhost:${PORT}`);
+// });
 
 export default app;
