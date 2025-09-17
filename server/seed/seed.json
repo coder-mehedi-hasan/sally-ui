@@ -1,0 +1,56 @@
+{
+  "users": [
+    { "key": "alice", "display_name": "Alice Nguyen", "handle": "alice", "email": "alice@sally.dev", "bio": "Coffee, code, and communities.", "avatar_url": "https://picsum.photos/id/1011/200/200" },
+    { "key": "bob", "display_name": "Bob Patel", "handle": "bob", "email": "bob@sally.dev", "bio": "Runner. Product tinkerer.", "avatar_url": "https://picsum.photos/id/1005/200/200" },
+    { "key": "carol", "display_name": "Carol Zhao", "handle": "carol", "email": "carol@sally.dev", "bio": "Reader + hiker.", "avatar_url": "https://picsum.photos/id/1027/200/200" },
+    { "key": "dave", "display_name": "Dave Williams", "handle": "dave", "email": "dave@sally.dev", "bio": "Weekend photographer.", "avatar_url": "https://picsum.photos/id/1025/200/200" },
+    { "key": "eve", "display_name": "Eve Laurent", "handle": "eve", "email": "eve@sally.dev", "bio": "Neighbourhood organizer.", "avatar_url": "https://picsum.photos/id/1012/200/200" },
+    { "key": "frank", "display_name": "Frank Müller", "handle": "frank", "email": "frank@sally.dev", "bio": "Trail runner and foodie.", "avatar_url": "https://picsum.photos/id/1014/200/200" },
+    { "key": "grace", "display_name": "Grace Kim", "handle": "grace", "email": "grace@sally.dev", "bio": "UX person, baking bread.", "avatar_url": "https://picsum.photos/id/1001/200/200" },
+    { "key": "heidi", "display_name": "Heidi Fischer", "handle": "heidi", "email": "heidi@sally.dev", "bio": "Climber and minimalist.", "avatar_url": "https://picsum.photos/id/1010/200/200" },
+    { "key": "ivan", "display_name": "Ivan Petrov", "handle": "ivan", "email": "ivan@sally.dev", "bio": "Maps + data viz.", "avatar_url": "https://picsum.photos/id/1016/200/200" },
+    { "key": "judy", "display_name": "Judy Alvarez", "handle": "judy", "email": "judy@sally.dev", "bio": "Books over brunch.", "avatar_url": "https://picsum.photos/id/1021/200/200" }
+  ],
+  "friendships": [
+    { "from": "alice", "to": "bob", "action": "accept" },
+    { "from": "carol", "to": "alice", "action": "accept" },
+    { "from": "dave", "to": "alice", "action": "decline" },
+    { "from": "eve", "to": "bob", "action": "accept" },
+    { "from": "frank", "to": "carol", "action": "accept" },
+    { "from": "grace", "to": "heidi", "action": "accept" },
+    { "from": "ivan", "to": "judy", "action": "" },
+    { "from": "bob", "to": "carol", "action": "accept" },
+    { "from": "heidi", "to": "alice", "action": "accept" },
+    { "from": "judy", "to": "alice", "action": "decline" }
+  ],
+  "communities": [
+    { "name": "Coffee Club", "about": "Beans, brews, and banter.", "owner": "alice", "members": ["bob", "carol"] },
+    { "name": "Hikers United", "about": "Trails this weekend.", "owner": "dave", "members": ["eve", "frank", "grace"] },
+    { "name": "Office Runners", "about": "Lunch run crew.", "owner": "bob", "members": ["alice", "heidi"] },
+    { "name": "Neighbourhood Watch", "about": "Keep our block safe.", "owner": "eve", "members": ["alice", "bob", "carol", "dave"] },
+    { "name": "Bookworms", "about": "Monthly picks and notes.", "owner": "carol", "members": ["judy", "ivan"] }
+  ],
+  "posts": [
+    { "author": "alice", "text": "Morning latte art — getting better! ☕", "images": ["https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80"] },
+    { "author": "bob", "text": "5K at lunch — legs feel great.", "images": ["https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=1200&q=80"] },
+    { "author": "carol", "text": "Finished a great read on design systems.", "images": ["https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80"] },
+    { "author": "dave", "text": "Golden hour is undefeated.", "images": ["https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&q=80"] },
+    { "author": "eve", "text": "Block party planning: volunteers welcome!", "images": ["https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80"] },
+    { "author": "frank", "text": "Trail shoes broke in nicely.", "images": ["https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=1200&q=80"] },
+    { "author": "grace", "text": "Sourdough finally rose like a champ.", "images": ["https://images.unsplash.com/photo-1514512364185-4c2b1e0b1cb1?w=1200&q=80"] },
+    { "author": "heidi", "text": "Bouldering session PR!", "images": ["https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&q=80"] },
+    { "author": "ivan", "text": "New map style experiment.", "images": ["https://images.unsplash.com/photo-1502920917128-1aa500764b6a?w=1200&q=80"] },
+    { "author": "judy", "text": "Book club: any sci‑fi recs?", "images": ["https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=80"] }
+  ],
+  "communityPosts": [
+    { "community": "Coffee Club", "author": "alice", "text": "Trying a new Ethiopian roast — citrus notes!", "images": ["https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=1200&q=80"] },
+    { "community": "Coffee Club", "author": "bob", "text": "Grinder calibration tips?", "images": ["https://images.unsplash.com/photo-1445077100181-a33e9ac94db0?w=1200&q=80"] },
+    { "community": "Hikers United", "author": "dave", "text": "Saturday 8am at trailhead?", "images": ["https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=1200&q=80"] },
+    { "community": "Hikers United", "author": "grace", "text": "Weather looks perfect for a ridge loop.", "images": ["https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=80"] },
+    { "community": "Office Runners", "author": "bob", "text": "Tempo run on the river path.", "images": ["https://images.unsplash.com/photo-1490376840453-5f616fbebe5b?w=1200&q=80"] },
+    { "community": "Neighbourhood Watch", "author": "eve", "text": "Meeting notes posted — check the doc.", "images": ["https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?w=1200&q=80"] },
+    { "community": "Bookworms", "author": "carol", "text": "Next pick: short stories by Le Guin.", "images": ["https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=80"] },
+    { "community": "Bookworms", "author": "judy", "text": "Annotating chapter 3 — loving the prose.", "images": ["https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=1200&q=80"] }
+  ]
+}
+
