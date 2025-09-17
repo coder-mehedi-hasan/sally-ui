@@ -25,6 +25,8 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(root, 'uploads');
 const DEV_MODE_OAUTH = String(process.env.DEV_MODE_OAUTH || 'true') === 'true';
 const ADMIN_SEED_SECRET = process.env.ADMIN_SEED_SECRET || '';
 const SEED_FILE = process.env.SEED_FILE || path.join(__dirname, 'seed', 'seed.json');
+const isVercel = process.env.IS_VERCEL === 'true';
+
 console.log('[sally-ui] Env:', {
   PORT,
   API_BASE,
@@ -193,8 +195,11 @@ wss.on('connection', (ws) => {
   ws.on('close', () => sockets.delete(ws));
 });
 
-// server.listen(PORT, () => {
-//   console.log(`[sally-ui] listening on http://localhost:${PORT}`);
-// });
+if (!isVercel) {
+  server.listen(PORT, () => {
+    console.log(`[sally-ui] listening on http://localhost:${PORT}`);
+  });
+  ;
+}
 
 export default app;
