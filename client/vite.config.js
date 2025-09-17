@@ -9,6 +9,11 @@ export default defineConfig({
       '/api': {
         target: process.env.API_BASE || 'https://api.quarkshub.com',
         changeOrigin: true,
+      },
+      '/ws': {
+        target: process.env.WS_BASE || 'https://api.quarkshub.com',
+        ws: true,              // ✅ enable websocket proxy
+        changeOrigin: true,
       }
     }
   }
