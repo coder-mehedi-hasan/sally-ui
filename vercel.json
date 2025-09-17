@@ -7,20 +7,12 @@
         {
             "src": "client/dist/**",
             "use": "@vercel/static"
-        },
-        {
-            "src": "sally.jpg",
-            "use": "@vercel/static"
         }
     ],
     "routes": [
         {
             "src": "/api/(.*)",
             "dest": "/server/index.js"
-        },
-        {
-            "src": "/sally.jpg",
-            "dest": "/sally.jpg"
         },
         {
             "src": "/(.*)",
