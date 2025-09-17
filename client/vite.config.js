@@ -7,7 +7,7 @@ export default defineConfig({
     port: Number(process.env.PORT || 5173),
     proxy: {
       '/api': {
-        target: process.env.API_BASE || 'http://localhost:18080',
+        target: process.env.API_BASE || 'https://api.quarkshub.com/api',
         changeOrigin: true,
       }
     }
