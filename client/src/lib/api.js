@@ -1,4 +1,4 @@
-const API_BASE = 'https://api.quarkshub.com/api';
+const API_BASE = '/api';
 
 export function setToken(t){ localStorage.setItem('token', t||''); }
 export function getToken(){ return localStorage.getItem('token') || ''; }
