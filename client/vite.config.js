@@ -7,12 +7,7 @@ export default defineConfig({
     port: Number(process.env.PORT || 5173),
     proxy: {
       '/api': {
-        target: process.env.API_BASE || 'https://api.quarkshub.com',
-        changeOrigin: true,
-      },
-      '/ws': {
-        target: process.env.WS_BASE || 'https://api.quarkshub.com',
-        ws: true,              // ✅ enable websocket proxy
+        target: process.env.API_BASE || 'http://localhost:18080',
         changeOrigin: true,
       }
     }
