@@ -193,6 +193,8 @@ wss.on('connection', (ws) => {
   ws.on('close', () => sockets.delete(ws));
 });
 
-server.listen(PORT, () => {
-  console.log(`[sally-ui] listening on http://localhost:${PORT}`);
-});
+// server.listen(PORT, () => {
+//   console.log(`[sally-ui] listening on http://localhost:${PORT}`);
+// });
+
+export default app;
