@@ -21,13 +21,13 @@ export default function MediaPreviews({ files=[], onRemove }){
         p.url ? (
           <div key={i} className="preview-thumb">
             <img src={p.url} alt={p.name} />
-            <button className="preview-remove" onClick={()=>onRemove && onRemove(i)}>✕</button>
+            <button className="preview-remove scale-90" onClick={()=>onRemove && onRemove(i)}>✕</button>
           </div>
         ) : (
           <div key={i} className="preview-chip">
             <span className="kind">{iconFor(p.type)}</span>
             <span className="name" title={p.name}>{p.name}</span>
-            <button className="preview-remove" onClick={()=>onRemove && onRemove(i)}>✕</button>
+            <button className="preview-remove scale-90" onClick={()=>onRemove && onRemove(i)}>✕</button>
           </div>
         )
       ))}

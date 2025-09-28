@@ -1,0 +1,95 @@
+.mycircles-card {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.mycircles-card .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #111827;
+}
+
+.mycircles-card .circle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.mycircles-card .circle-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.mycircles-card .circle-item:hover {
+    background: #f9fafb;
+}
+
+.mycircles-card .tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 9999px;
+}
+
+.mycircles-card .circle-name {
+    font-weight: 600;
+    color: #374151;
+}
+
+.mycircles-card .circle-empty {
+    opacity: 0.6;
+    font-size: 14px;
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+.mycircles-card .circle-footer {
+    margin-top: 0.75rem;
+    text-align: right;
+}
+
+.mycircles-card .view-all {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.mycircles-card .view-all:hover {
+    text-decoration: underline;
+}
+
+.comments-list {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 4px;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Chrome, Edge, Safari */
+.comments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+    background: transparent;
+}

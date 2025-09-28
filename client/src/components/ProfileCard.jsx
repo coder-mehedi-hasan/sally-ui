@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { sally } from '../lib/api.js'
+import { NavLink } from 'react-router-dom'
 
 export default function ProfileCard(){
   const [p, setP] = useState(null)
@@ -25,7 +26,7 @@ export default function ProfileCard(){
 
   return (
     <>
-    <div className="card sidebar-sticky">
+    <div className="card">
       <div style={{display:'flex', alignItems:'center', gap:12}}>
         {p?.avatar_url ? (
           <div className="zoom-wrap" onClick={()=>setZoom(true)} style={{cursor:'zoom-in'}}>
@@ -45,7 +46,7 @@ export default function ProfileCard(){
         <div className="stat"><span>Total posts</span><b>{postCount}</b></div>
       </div>
       <div style={{marginTop:12}}>
-        <a href="/profile"><button className="primary" style={{width:'100%'}}>Edit Profile</button></a>
+        <NavLink to="/profile"><button className="primary" style={{width:'100%'}}>Edit Profile</button></NavLink>
       </div>
     </div>
     {zoom && (
