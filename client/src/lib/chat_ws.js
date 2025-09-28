@@ -67,11 +67,13 @@ function connect() {
     hello();
     // flush queued frames after hello is sent
     flushPending()
+    console.log("Conected")
 
     // Do not send any app frames inside onopen; pending will flush via the flusher
 
     ws.onmessage = (ev) => {
       let m
+      console.log("On message call from client: ", ev.data)
       try { m = JSON.parse(ev.data) }
       catch (e) { if (CHAT_DEBUG) console.warn('[chat-ws] parse error', e); return }
 
@@ -82,6 +84,7 @@ function connect() {
     ws.onerror = (e) => { if (CHAT_DEBUG) console.error('[chat-ws] error', e) }
 
     ws.onclose = (ev) => {
+      console.log("Closing socket ")
       if (CHAT_DEBUG) console.warn('[chat-ws] close', { code: ev?.code, reason: ev?.reason, wasClean: ev?.wasClean })
       if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null }
       if (flushTimer) { clearInterval(flushTimer); flushTimer = null }
