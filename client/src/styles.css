@@ -70,7 +70,7 @@ header {
   background: var(--panel);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 11;
   color: var(--panel-fg);
 }
 

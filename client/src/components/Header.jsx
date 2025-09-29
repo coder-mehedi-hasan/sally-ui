@@ -38,11 +38,11 @@ export default function Header({ theme, setTheme, me, myProf, setMe }) {
             {/* Mobile nav */}
             {mobileNav && (
                 <nav className="mobile-nav">
-                    <NavLink to="/" end onClick={() => setMobileNav(false)}><FaHome /> Feed</NavLink>
-                    <NavLink to="/circles" onClick={() => setMobileNav(false)}><FaUsers /> Circles</NavLink>
-                    <NavLink to="/communities" onClick={() => setMobileNav(false)}><FiUsers /> Communities</NavLink>
-                    <NavLink to="/chat" onClick={() => setMobileNav(false)}><FaComments /> Chat</NavLink>
-                    <NavLink to="/friends" onClick={() => setMobileNav(false)}><FaUsers /> Friends</NavLink>
+                    <NavLink className='!pl-2' to="/" end onClick={() => setMobileNav(false)}><FaHome /> Feed</NavLink>
+                    <NavLink className='!pl-2' to="/circles" onClick={() => setMobileNav(false)}><FaUsers /> Circles</NavLink>
+                    <NavLink className='!pl-2' to="/communities" onClick={() => setMobileNav(false)}><FiUsers /> Communities</NavLink>
+                    <NavLink className='!pl-2' to="/chat" onClick={() => setMobileNav(false)}><FaComments /> Chat</NavLink>
+                    <NavLink className='!pl-2' to="/friends" onClick={() => setMobileNav(false)}><FaUsers /> Friends</NavLink>
                 </nav>
             )}
 

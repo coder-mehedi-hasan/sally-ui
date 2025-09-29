@@ -162,54 +162,65 @@ export default function Feed({ me }) {
       </div>
     )
   }
+
+  const PostBox = () => {
+    return (
+      <div className="card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <h4 style={{ margin: 0 }} className='font-bold'>Create post</h4>
+        </div>
+        <ContentBox
+          value={text}
+          onChange={setText}
+          onSubmit={post}
+          placeholder="What's new?"
+          minHeight={100}
+        />
+        {/* <textarea rows={3} placeholder="What's new?" value={text} onChange={e=>setText(e.target.value)} /> */}
+        <MediaPreviews files={files} onRemove={(i) => setFiles(f => f.filter((_, idx) => idx !== i))} />
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
+          <select className="select-dark select-compact select-sm" value={audience} onChange={e => setAudience(e.target.value)}>
+            <option value="friends">Friends</option>
+            <option value="global">Global</option>
+            <option value="circle">Circle</option>
+          </select>
+          {audience === 'circle' && (
+            <select className="select-dark select-compact select-sm" value={postCircleId} onChange={e => setPostCircleId(e.target.value)}>
+              <option value="">Select circle…</option>
+              {circles.map(c => <option key={c.id} value={c.id}>{c.name} • {c.kind}</option>)}
+            </select>
+          )}
+        </div>
+        <div className="composer-actions">
+          <UploadToolbar onFiles={(fs) => setFiles(prev => prev.concat(fs))} />
+          <button className="primary bg-[#fff]" onClick={post} disabled={loading}>
+            {loading ? <>Posting… <span className="spinner" /></> : 'Post'}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="layout-3col">
-        <div className="col-left  sidebar-sticky">
+        <div className="col-left  sidebar-sticky hidden md:block">
           {/* If a friend is selected via ?user=, show their profile */}
           {new URLSearchParams(window.location.search).get('user') ? (
             <FriendProfileCard handle={new URLSearchParams(window.location.search).get('user')} />
           ) : (
             <>
-              <ProfileCard />
+              <div className=''>
+                <ProfileCard />
+              </div>
               <div style={{ height: 12 }} />
               <MyCircles limit={6} onPick={(c) => { setScope('circle'); setCircleId(String(c.id)); }} />
             </>
           )}
         </div>
         <div className="col-main">
-          <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <h4 style={{ margin: 0 }} className='font-bold'>Create post</h4>
-            </div>
-            <ContentBox
-              value={text}
-              onChange={setText}
-              onSubmit={post}
-              placeholder="What's new?"
-              minHeight={100}
-            />
-            {/* <textarea rows={3} placeholder="What's new?" value={text} onChange={e=>setText(e.target.value)} /> */}
-            <MediaPreviews files={files} onRemove={(i) => setFiles(f => f.filter((_, idx) => idx !== i))} />
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
-              <select className="select-dark select-compact select-sm" value={audience} onChange={e => setAudience(e.target.value)}>
-                <option value="friends">Friends</option>
-                <option value="global">Global</option>
-                <option value="circle">Circle</option>
-              </select>
-              {audience === 'circle' && (
-                <select className="select-dark select-compact select-sm" value={postCircleId} onChange={e => setPostCircleId(e.target.value)}>
-                  <option value="">Select circle…</option>
-                  {circles.map(c => <option key={c.id} value={c.id}>{c.name} • {c.kind}</option>)}
-                </select>
-              )}
-            </div>
-            <div className="composer-actions">
-              <UploadToolbar onFiles={(fs) => setFiles(prev => prev.concat(fs))} />
-              <button className="primary bg-[#fff]" onClick={post} disabled={loading}>
-                {loading ? <>Posting… <span className="spinner" /></> : 'Post'}
-              </button>
-            </div>
+          <div className=''>
+            <PostBox></PostBox>
           </div>
           <div className="card sidebar-sticky filter-bar pt-4 pb-[8px] z-10" id='filter-bar' style={{ marginTop: 12 }}>
             {/* Feed filter row (Friends / Global / Circle) */}
@@ -265,7 +276,7 @@ export default function Feed({ me }) {
             </div>
           </div>
         </div>
-        <div className="col-right sidebar-sticky">
+        <div className="col-right sidebar-sticky !hidden md:!block">
           {new URLSearchParams(window.location.search).get('user') ? (
             <FriendsCommunitiesCard handle={new URLSearchParams(window.location.search).get('user')} />
           ) : (

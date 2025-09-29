@@ -1,31 +1,138 @@
 import { useEffect, useState } from 'react'
 import { sally, upload } from '../lib/api.js'
 
-export default function Profile(){
-  const [profile, setProfile] = useState({ display_name:'', handle:'', bio:'', avatar_url:'' })
+export default function Profile() {
+  const [profile, setProfile] = useState({ display_name: '', handle: '', bio: '', avatar_url: '' })
   const [file, setFile] = useState(null)
+  const [error, setError] = useState('')
 
-  useEffect(()=>{ (async()=>{ const j = await sally.getProfile({}); setProfile(j.profile||{}) })() }, [])
+  useEffect(() => {
+    (async () => {
+      const j = await sally.getProfile({})
+      setProfile(j.profile || {})
+    })()
+  }, [])
 
-  async function save(){
+  async function save() {
+    setError('') // clear previous error
+
     let avatar_url = profile.avatar_url
-    if (file){ const up = await upload([file]); if (up && up[0]) avatar_url = up[0].url }
-    await sally.upsertProfile({ display_name: profile.display_name, handle: profile.handle, bio: profile.bio, avatar_url })
-    const j = await sally.getProfile({}); setProfile(j.profile||{})
+    if (file) {
+      // ✅ Validate again before upload
+      const isValid = validateFile(file)
+      if (!isValid) return
+
+      const up = await upload([file])
+      if (up && up[0]) avatar_url = up[0].url
+    }
+
+    await sally.upsertProfile({
+      display_name: profile.display_name,
+      handle: profile.handle,
+      bio: profile.bio,
+      avatar_url
+    })
+
+    const j = await sally.getProfile({})
+    setProfile(j.profile || {})
+    setFile(null)
+  }
+
+  function validateFile(selectedFile) {
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg']
+    const maxSizeMB = 5
+
+    if (!validTypes.includes(selectedFile.type)) {
+      setError('Please select a valid image file (JPG, PNG, WEBP).')
+      setFile(null)
+      return false
+    }
+
+    if (selectedFile.size > maxSizeMB * 1024 * 1024) {
+      setError(`Image size should be less than ${maxSizeMB}MB.`)
+      setFile(null)
+      return false
+    }
+
+    return true
+  }
+
+  function handleFileChange(e) {
+    const selectedFile = (e.target.files || [])[0] || null
+    if (selectedFile) {
+      const isValid = validateFile(selectedFile)
+      if (isValid) {
+        setFile(selectedFile)
+        setError('')
+      }
+    } else {
+      setFile(null)
+      setError('')
+    }
   }
 
   return (
-    <div className="card" style={{maxWidth:640}}>
-      <h3>My profile</h3>
-      <div className="row"><div className="col"><input placeholder="Display name" value={profile.display_name||''} onChange={e=>setProfile({...profile, display_name:e.target.value})} /></div></div>
-      <div className="row" style={{marginTop:8}}><div className="col"><input placeholder="@handle" value={profile.handle||''} onChange={e=>setProfile({...profile, handle:e.target.value})} /></div></div>
-      <div className="row" style={{marginTop:8}}><div className="col"><textarea rows={4} placeholder="Bio" value={profile.bio||''} onChange={e=>setProfile({...profile, bio:e.target.value})} /></div></div>
-      <div className="row" style={{marginTop:8}}>
-        <div className="col"><input type="file" onChange={e=>setFile((e.target.files||[])[0]||null)} /></div>
-        <div><img src={profile.avatar_url||'/sally.jpg'} alt="avatar" style={{height:48, width:48, borderRadius:8}}/></div>
+    <div className="card mx-auto max-w-xl rounded-2xl bg-white p-6 shadow-md">
+      <h3 className="mb-4 text-2xl font-semibold text-gray-800">My profile</h3>
+
+      <div className="row mb-3">
+        <div className="col w-full">
+          <input
+            placeholder="Display name"
+            value={profile.display_name || ''}
+            onChange={e => setProfile({ ...profile, display_name: e.target.value })}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm form-input"
+          />
+        </div>
       </div>
-      <div style={{marginTop:8}}><button className="primary" onClick={save}>Save</button></div>
+
+      <div className="row mb-3">
+        <div className="col w-full">
+          <input
+            className="form-input w-full rounded-lg border border-gray-300 px-3 py-2 text-sm form-input"
+            placeholder="@handle"
+            value={profile.handle || ''}
+            onChange={e => setProfile({ ...profile, handle: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="row mb-3">
+        <div className="col w-full">
+          <textarea
+            className="form-input w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm form-input"
+            rows={4}
+            placeholder="Bio"
+            value={profile.bio || ''}
+            onChange={e => setProfile({ ...profile, bio: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="row mb-4 flex items-center gap-4">
+        <div className="col">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[var(--primary)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-black"
+          />
+          {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        </div>
+        <div>
+          <img
+            src={file ? URL.createObjectURL(file) : profile.avatar_url || '/logo/sally.jpg'}
+            alt="avatar"
+            className="h-12 w-12 rounded-lg object-cover ring-1 ring-gray-300"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button className="primary w-full" onClick={save}>
+          Save
+        </button>
+      </div>
     </div>
   )
 }
-
