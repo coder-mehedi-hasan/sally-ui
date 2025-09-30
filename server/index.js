@@ -20,7 +20,7 @@ const root = path.resolve(__dirname, '..');
 dotenv.config({ path: path.join(root, '.env') });
 
 const PORT = process.env.PORT || 5173;
-const API_BASE = process.env.API_BASE || 'http://localhost:18080/api';
+const API_BASE = process.env.API_BASE || 'https://api.quarkshub.com/api';
 const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(root, 'uploads');
 const DEV_MODE_OAUTH = String(process.env.DEV_MODE_OAUTH || 'true') === 'true';
 const ADMIN_SEED_SECRET = process.env.ADMIN_SEED_SECRET || '';
