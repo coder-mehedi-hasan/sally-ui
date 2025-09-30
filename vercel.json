@@ -15,8 +15,8 @@
             "dest": "/server/index.js"
         },
         {
-            "src": "/(.*)",
-            "dest": "/client/dist/$1"
+            "src": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|json)",
+            "dest": "/client/dist/$1.$2"
         },
         {
             "src": "/(.*)",
