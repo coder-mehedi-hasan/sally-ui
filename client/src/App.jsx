@@ -11,6 +11,8 @@ import Chat from './components/Chat.jsx'
 import FriendsPage from './components/FriendsPage.jsx'
 import { auth, sally } from './lib/api.js'
 import Header from './components/Header.jsx'
+import GoogleAuthCallback from './components/GoogleAuthCallback.jsx'
+import { Toaster } from 'react-hot-toast';
 
 export default function App() {
   const [theme, setTheme] = useState('light')
@@ -22,34 +24,51 @@ export default function App() {
   }, [theme])
 
   useEffect(() => {
-    (async () => {
-      try {
-        const j = await auth.verify()
-        const u = j.data?.sub || null
-        setMe(u)
-        if (u) {
-          const p = await sally.getProfile({})
-          setMyProf(p.profile || null)
-        }
-      } catch (e) { }
-    })()
+    verify()
   }, [])
+
+  const verify = async () => {
+    try {
+      const j = await auth.verify()
+      const u = j.data?.sub || null
+      setMe(u)
+      if (u) {
+        const p = await sally.getProfile({})
+        setMyProf(p.profile || null)
+      }
+    } catch (e) {
+      console.warn('Auth verify failed', e)
+    }
+  }
+
+  const onLogin = (u) => {
+    verify();
+  }
 
   return (
     <BrowserRouter>
-      <Header theme={theme} setTheme={setTheme} me={me} myProf={myProf} setMe={setMe} />
+      <Header theme={theme} setTheme={setTheme} me={me} myProf={myProf} setMe={setMe} key={me} />
       <div className="container">
-        {!me ? <Login onLogin={(u) => setMe(u)} /> : (
-          <Routes>
-            <Route path="/" element={<Feed me={me} />} />
-            <Route path="/circles" element={<Circles />} />
-            <Route path="/communities" element={<Communities />} />
-            <Route path="/communities/:id" element={<CommunityFeed />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/friends" element={<FriendsPage />} />
-          </Routes>
-        )}
+        <Routes>
+          <Route path="/auth/callback" element={<GoogleAuthCallback onLogin={onLogin} />} />
+          {!me ? (
+            // Login route
+            <Route path="*" element={<Login onLogin={onLogin} />} />
+          ) : (
+            <>
+              <Route path="/" element={<Feed me={me} />} />
+              <Route path="/circles" element={<Circles />} />
+              <Route path="/communities" element={<Communities />} />
+              <Route path="/communities/:id" element={<CommunityFeed />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/friends" element={<FriendsPage />} />
+            </>
+          )}
+        </Routes>
+        <Toaster
+          position='bottom-right'
+        />
       </div>
     </BrowserRouter>
   )

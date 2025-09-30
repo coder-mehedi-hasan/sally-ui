@@ -73,7 +73,7 @@ export default function Profile() {
 
   return (
     <div className="card mx-auto max-w-xl rounded-2xl bg-white p-6 shadow-md">
-      <h3 className="mb-4 text-2xl font-semibold text-gray-800">My profile</h3>
+      <h4 className="mb-2 font-bold">My profile</h4>
 
       <div className="row mb-3">
         <div className="col w-full">

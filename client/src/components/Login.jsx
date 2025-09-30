@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { FaEye, FaEyeSlash, FaGoogle, FaLock, FaUser } from "react-icons/fa"
 import { auth, oauthGoogle } from '../lib/api.js'
-import { FaUser, FaLock, FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa"
+import { googleOAuthSignIn } from '../lib/googleOAuth.js'
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('')
@@ -97,7 +98,7 @@ export default function Login({ onLogin }) {
 
       {/* Google Dev Login */}
       <div className="mt-6">
-        <div className="relative">
+        {/* <div className="relative">
           <FaGoogle className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             placeholder="Email for Google (dev)"
@@ -105,10 +106,10 @@ export default function Login({ onLogin }) {
             onChange={e => setDevEmail(e.target.value)}
             className="form-input w-full !pl-9"
           />
-        </div>
+        </div> */}
         <button
-          onClick={doGoogle}
-          disabled={!isValidEmail(devEmail)}
+          onClick={googleOAuthSignIn}
+          // disabled={!isValidEmail(devEmail)}
           className="mt-3 w-full flex items-center justify-center gap-2 border rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           <FaGoogle className="text-red-500" />

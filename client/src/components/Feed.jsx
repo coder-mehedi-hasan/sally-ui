@@ -20,6 +20,7 @@ import AvatarSmall from './common/AvatarSmall.jsx'
 import MediaGrid from './common/MediaGrid.jsx'
 import ReactionsModal from './common/ReactionsModal.jsx'
 import { NavLink } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export default function Feed({ me }) {
   const [text, setText] = useState('')
@@ -84,12 +85,16 @@ export default function Feed({ me }) {
       setLoading(true)
       if (files.length) media = await upload(files)
     } finally { }
-    const circle_id = audience === 'circle' && postCircleId ? postCircleId : undefined
-    const visibility = audience === 'global' ? 'global' : 'friends'
-    await sally.createPost({ text, media, circle_id, visibility })
-    setText(''); setFiles([])
-    await load(true)
-    setLoading(false)
+    try {
+      const circle_id = audience === 'circle' && postCircleId ? postCircleId : undefined
+      const visibility = audience === 'global' ? 'global' : 'friends'
+      await sally.createPost({ text, media, circle_id, visibility })
+      setText(''); setFiles([])
+      await load(true)
+    } catch (error) { toast.error("Failed to Post!") }
+    finally {
+      setLoading(false)
+    }
     try { ws && ws.readyState === 1 && ws.send(JSON.stringify({ kind: 'post' })) } catch (e) { }
   }
 
@@ -102,7 +107,7 @@ export default function Feed({ me }) {
 
     const isExpanded = commentExpandedPost.has(post.id)
     return (
-      <div className='card mb-3' key={post.id}>
+      <div className='card mb-3 !p-0 ' key={post.id}>
         <div className="feed-item">
           <div style={{ fontSize: 12, opacity: 0.85, display: 'flex', alignItems: 'center', gap: 8 }}>
             <NavLink to={`/?user=@${(author?.handle || post.author)}`}>
