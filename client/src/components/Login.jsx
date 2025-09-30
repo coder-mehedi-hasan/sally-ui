@@ -113,7 +113,7 @@ export default function Login({ onLogin }) {
           className="mt-3 w-full flex items-center justify-center gap-2 border rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           <FaGoogle className="text-red-500" />
-          Login with Google (dev)
+          Login with Google
         </button>
       </div>
 
