@@ -3,6 +3,7 @@ import { FaCheck, FaSearch, FaTimes, FaTimesCircle, FaUserFriends } from "react-
 import { FiSearch } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
 import { sally } from '../lib/api.js'
+import { toast } from 'react-hot-toast'
 
 export default function FriendRequests({ visiableViewAllBtn = true, disableFriendsModal = false }) {
   const [incoming, setIncoming] = useState([])
@@ -54,6 +55,54 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
     return () => { if (tRef.current) clearTimeout(tRef.current) }
   }, [query])
 
+
+  const NewFriendRequestCard = ({ u }) => {
+    const [requested, setRequested] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const alreadyRequested =
+      requested || (!!outgoing?.find((r) => r.to === u.username)) || (!!incoming?.find((r) => r.from === u.username));
+
+    const handleSendRequest = async () => {
+      setLoading(true);
+      try {
+        await send(u.username);
+        setRequested(true);
+      } catch (err) {
+        // console.log(err?.message)
+        console.error("Failed to send request:", err);
+        toast.error(err?.message || "Failed to send request");
+
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
+    return (
+      <div className="search-item" style={{ overflowWrap: "anywhere" }} key={u.username}>
+        <div className="name">{u.display_name || u.username}</div>
+        <div className="handle">@{u.handle || u.username}</div>
+        <div className="spacer" />
+        <button
+          style={{
+            overflowWrap: "break-word",
+          }}
+          className={`primary !px-2 !text-xs flex items-center gap-1 ${alreadyRequested ? "!bg-[#1f2937af] opacity-75" : ""
+            }`}
+          disabled={alreadyRequested || loading}
+          onClick={handleSendRequest}>
+          {loading ? (
+            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : alreadyRequested ? (
+            "Sent"
+          ) : (
+            "Send request"
+          )}
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="card">
       {/* Header */}
@@ -94,12 +143,7 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
         {!!results.length && (
           <div className="search-results" style={{ marginTop: 8 }}>
             {results.map(u => (
-              <div className="search-item" key={u.username}>
-                <div className="name">{u.display_name || u.username}</div>
-                <div className="handle">@{u.handle || u.username}</div>
-                <div className="spacer" />
-                <button className="primary" onClick={() => send(u.username)}>Send request</button>
-              </div>
+              <NewFriendRequestCard u={u} key={u?.username} />
             ))}
           </div>
         )}
@@ -112,7 +156,10 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
           {(incoming || []).slice(0, 6).map(r => (
             <div
               key={r.id}
-              className="flex items-center justify-between px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between px-3 py-2 border
+               rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors
+              owa
+              "
             >
               {/* User info */}
               <div className="flex items-center gap-3">
@@ -133,13 +180,13 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
               ) : (
                 <div className="flex gap-2">
                   <button
-                    className="primary flex items-center gap-1 !py-1 !px-3 !rounded-lg"
+                    className="primary flex items-center gap-1 !py-1 !px-3 !rounded-lg owb"
                     onClick={() => accept(r.id)}
                   >
                     <FaCheck size={12} /> Accept
                   </button>
                   <button
-                    className="flex items-center gap-1 text-sm text-red-600 border border-red-300 rounded-lg px-2 py-1 hover:bg-red-50"
+                    className="flex items-center gap-1 text-sm text-red-600 border border-red-300 rounded-lg px-2 py-1 hover:bg-red-50 owb"
                     onClick={() => decline(r.id)}
                   >
                     <FaTimesCircle size={12} /> Decline
@@ -286,5 +333,5 @@ function FriendsListPopup() {
 function AvatarSmall({ url, name }) {
   if (url) { return <img src={url} alt="" style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid #ddd' }} /> }
   const initial = (name || '?').substring(0, 1).toUpperCase()
-  return <div className="avatar" style={{ width: 22, height: 22, fontSize: 11 }}>{initial}</div>
+  return <div className="avatar owb" style={{ width: 22, height: 22, fontSize: 11 }}>{initial}</div>
 }

@@ -6,7 +6,7 @@
 :root {
   /* Font stack approximating Twitter's Chirp (not redistributable) */
   --font-ui: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
-  --bg: #F2F7F3;
+  --bg: #f2f4f7;
   /* requested body background */
   --panel: #ffffff;
   /* component background in light mode */
@@ -552,7 +552,7 @@ button.reaction.selected {
   justify-content: center;
   font-weight: 700;
   background: #f2f2f2;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #bababa;
 }
 
 .stat {
@@ -974,4 +974,12 @@ svg {
   .filter-bar {
     top: 67px !important;
   }
+}
+
+.owa {
+  overflow-wrap: anywhere;
+}
+
+.owb {
+  overflow-wrap: break-word;
 }

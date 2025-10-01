@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { sally, upload } from '../lib/api.js'
+import { toast } from 'react-hot-toast'
 
 export default function Profile() {
   const [profile, setProfile] = useState({ display_name: '', handle: '', bio: '', avatar_url: '' })
   const [file, setFile] = useState(null)
   const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -14,28 +16,39 @@ export default function Profile() {
   }, [])
 
   async function save() {
-    setError('') // clear previous error
+    setError('')
+    setSaving(true)
 
-    let avatar_url = profile.avatar_url
-    if (file) {
-      // ✅ Validate again before upload
-      const isValid = validateFile(file)
-      if (!isValid) return
+    try {
+      let avatar_url = profile.avatar_url
+      if (file) {
+        const isValid = validateFile(file)
+        if (!isValid) {
+          setSaving(false)
+          return
+        }
+        const up = await upload([file])
+        if (up && up[0]) avatar_url = up[0].url
+      }
 
-      const up = await upload([file])
-      if (up && up[0]) avatar_url = up[0].url
+      await sally.upsertProfile({
+        display_name: profile.display_name,
+        handle: profile.handle,
+        bio: profile.bio,
+        avatar_url
+      })
+
+      toast.success('Profile saved!', { position: 'top-center' })
+
+      const j = await sally.getProfile({})
+      setProfile(j.profile || {})
+      setFile(null)
+    } catch (err) {
+      console.error(err)
+      toast.error('Failed to save profile')
+    } finally {
+      setSaving(false)
     }
-
-    await sally.upsertProfile({
-      display_name: profile.display_name,
-      handle: profile.handle,
-      bio: profile.bio,
-      avatar_url
-    })
-
-    const j = await sally.getProfile({})
-    setProfile(j.profile || {})
-    setFile(null)
   }
 
   function validateFile(selectedFile) {
@@ -129,8 +142,15 @@ export default function Profile() {
       </div>
 
       <div>
-        <button className="primary w-full" onClick={save}>
-          Save
+        <button
+          className="primary w-full flex justify-center items-center gap-2"
+          onClick={save}
+          disabled={saving}
+        >
+          {saving && (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          )}
+          {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
     </div>

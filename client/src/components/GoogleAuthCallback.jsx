@@ -14,7 +14,7 @@ export default function GoogleAuthCallback({ onLogin }) {
         const handleAuth = async () => {
             try {
                 if (!accessToken) {
-                    navigate('/login')
+                    navigate('/')
                     return
                 }
 
@@ -31,11 +31,11 @@ export default function GoogleAuthCallback({ onLogin }) {
                     await onLogin?.(verified?.data?.sub || 'google')
                     navigate('/profile')
                 } else {
-                    navigate('/login')
+                    navigate('/')
                 }
             } catch (err) {
                 console.error('Google OAuth failed:', err)
-                navigate('/login')
+                navigate('/')
             } finally {
                 setLoading(false)
             }

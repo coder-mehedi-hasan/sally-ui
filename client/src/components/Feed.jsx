@@ -107,9 +107,9 @@ export default function Feed({ me }) {
 
     const isExpanded = commentExpandedPost.has(post.id)
     return (
-      <div className='card mb-3 !p-0 ' key={post.id}>
+      <div className='card mb-3 !p-0 overflow-hidden' key={post.id}>
         <div className="feed-item">
-          <div style={{ fontSize: 12, opacity: 0.85, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className='bg-[var(--bg)] !p-3 !pb-2' style={{ fontSize: 12, opacity: 0.85, display: 'flex', alignItems: 'center', gap: 8 }}>
             <NavLink to={`/?user=@${(author?.handle || post.author)}`}>
               <AvatarSmall size={38} author={author} username={post.author} />
             </NavLink>
@@ -133,36 +133,38 @@ export default function Feed({ me }) {
                   {scope === 'circle' ? 'Circle' : (community ? `Community${community.name ? ': ' + community.name : ''}` : ((post.visibility || 'friends') === 'global' ? 'Global' : 'Friends'))}
                 </span>
               </div>
-              <span className="meta text-xs">{feedFormatDate(post.created_at)}</span>
+              <span className="meta !text-xs">{feedFormatDate(post.created_at)}</span>
             </div>
           </div>
-          <div style={{ marginTop: 12 }}>{post.text}</div>
-          {!!media.length && (
-            <MediaGrid media={media} />
-          )}
-          <div style={{ marginTop: 12, fontSize: 12, opacity: 0.7 }}>
-            <span className='hover:underline cursor-pointer' onClick={(e) => { e.preventDefault(); showReactions(post.id) }}>{reactions} reactions</span>
-            <ReactionBreakdown postId={post.id} />
-            {" "}• <span className='hover:underline cursor-pointer' onClick={() => {
-              setCommentExpandedPost(pre => {
-                const nSet = new Set(pre)
-                if (nSet.has(post.id)) {
-                  nSet.delete(post.id)
-                } else {
-                  nSet.add(post.id)
-                }
-                return nSet;
-              });
-            }}>{updatedComments} comments</span>
+          <div className='p-3 pt-0'>
+            <div style={{ marginTop: 12 }}>{post.text}</div>
+            {!!media.length && (
+              <MediaGrid media={media} />
+            )}
+            <div style={{ marginTop: 12, fontSize: 12, opacity: 0.7 }}>
+              <span className='hover:underline cursor-pointer' onClick={(e) => { e.preventDefault(); showReactions(post.id) }}>{reactions} reactions</span>
+              <ReactionBreakdown postId={post.id} />
+              {" "}• <span className='hover:underline cursor-pointer' onClick={() => {
+                setCommentExpandedPost(pre => {
+                  const nSet = new Set(pre)
+                  if (nSet.has(post.id)) {
+                    nSet.delete(post.id)
+                  } else {
+                    nSet.add(post.id)
+                  }
+                  return nSet;
+                });
+              }}>{updatedComments} comments</span>
+            </div>
+            <Reactions postId={post.id} onReact={load} my={my_reaction} />
+            {
+              isExpanded && (
+                <div style={{ marginTop: 12, }} className='border-t py-1'>
+                  <Comments count={updatedComments} me={me} postId={post.id} notify={() => { try { ws && ws.readyState === 1 && ws.send(JSON.stringify({ kind: 'comment', post_id: post.id })); setUpdatedComments(pre => pre + 1) } catch (e) { } }} />
+                </div>
+              )
+            }
           </div>
-          <Reactions postId={post.id} onReact={load} my={my_reaction} />
-          {
-            isExpanded && (
-              <div style={{ marginTop: 12, }} className='border-t py-1'>
-                <Comments count={updatedComments} me={me} postId={post.id} notify={() => { try { ws && ws.readyState === 1 && ws.send(JSON.stringify({ kind: 'comment', post_id: post.id })); setUpdatedComments(pre => pre + 1) } catch (e) { } }} />
-              </div>
-            )
-          }
         </div>
       </div>
     )

@@ -32,51 +32,6 @@ export default function FriendsPage() {
           visiableViewAllBtn={false}
           disableFriendsModal={true}
         ></FriendRequests>
-        {/* <div className="card p-4 bg-white rounded-2xl shadow-md">
-          <h4 className="font-bold mb-2">Friend Requests</h4>
-
-          <div className="mb-4">
-            <b className="text-sm text-gray-700">Incoming</b>
-            <div className="mt-2 space-y-2">
-              {(incoming || []).map(r => (
-                <div key={r.id} className="flex items-center gap-3 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <Avatar url={r.from_profile?.avatar_url} name={r.from_profile?.display_name || r.from} />
-                  <div className="flex flex-col">
-                    <span>
-                      <span className="font-medium text-gray-800">{r.from_profile?.display_name || r.from}</span>
-                      <span className="text-xs text-gray-500">@{r.from_profile?.handle || r.from}</span>
-                    </span>
-                    <span className="text-xs text-gray-400">{r.status}</span>
-                  </div>
-                </div>
-              ))}
-              {!incoming.length && (
-                <div className="text-xs text-gray-500 text-center py-2">No incoming requests</div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <b className="text-sm text-gray-700">Outgoing</b>
-            <div className="mt-2 space-y-2">
-              {(outgoing || []).map(r => (
-                <div key={r.id} className="flex items-center gap-3 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <Avatar url={r.to_profile?.avatar_url} name={r.to_profile?.display_name || r.to} />
-                  <div className="flex flex-col">
-                    <span>
-                      <span className="font-medium text-gray-800">{r.to_profile?.display_name || r.to}</span>
-                      <span className="text-xs text-gray-500">@{r.to_profile?.handle || r.to}</span>
-                    </span>
-                    <span className="text-xs text-gray-400">{r.status}</span>
-                  </div>
-                </div>
-              ))}
-              {!outgoing.length && (
-                <div className="text-xs text-gray-500 text-center py-2">No outgoing requests</div>
-              )}
-            </div>
-          </div>
-        </div> */}
       </div>
 
       {/* All Friends */}
