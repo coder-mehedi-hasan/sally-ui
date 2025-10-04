@@ -17,22 +17,23 @@ import { Toaster } from 'react-hot-toast';
 export default function App() {
   const mediaQuery = window?.matchMedia('(prefers-color-scheme: dark)');
   const t = mediaQuery.matches ? 'dark' : 'light';
-  const [theme, setTheme] = useState(t)
+  const [theme, setTheme] = useState(localStorage?.getItem("theme") ?? t)
   const [me, setMe] = useState(null)
   const [myProf, setMyProf] = useState(null)
 
   useEffect(() => {
-    // console.log('Theme changed:', theme)
-    const mediaQuery = window?.matchMedia('(prefers-color-scheme: dark)');
-    // Set initial theme
-    const t = mediaQuery.matches ? 'dark' : 'light';
-    if (!theme) setTheme(t)
+    if (!theme) {
+      const mediaQuery = window?.matchMedia('(prefers-color-scheme: dark)');
+      const t = mediaQuery.matches ? 'dark' : 'light';
+      setTheme(t);
+    }
+    localStorage.setItem("theme", theme);
     document?.documentElement?.setAttribute('data-theme', theme)
   }, [theme])
 
 
   // Set initial theme
-  document?.documentElement?.setAttribute('data-theme', t)
+  document?.documentElement?.setAttribute('data-theme', theme)
 
   useEffect(() => {
     verify()
