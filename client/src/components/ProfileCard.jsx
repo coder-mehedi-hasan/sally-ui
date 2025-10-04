@@ -34,7 +34,7 @@ export default function ProfileCard(){
             <span className="zoom-icon">🔍</span>
           </div>
         ) : (
-          <div className="avatar">{initials}</div>
+          <div className="avatar !bg-[var(--bg)]">{initials}</div>
         )}
         <div>
           <div style={{fontWeight:700}}>{p?.display_name || p?.username || 'Me'}</div>

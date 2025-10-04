@@ -69,7 +69,7 @@ export default function CommunityProfileCard({ communityId, initialCommunity = n
                   <span className="zoom-icon">🔍</span>
                 </div>
               ) : (
-                <div className="avatar">{initials}</div>
+                <div className="avatar !bg-[var(--bg)]  !border-[var(--bg)]">{initials}</div>
               )}
               <div>
                 <div style={{ fontWeight: 700, fontSize: 18 }}>{c?.name || 'Community'}</div>
@@ -84,7 +84,7 @@ export default function CommunityProfileCard({ communityId, initialCommunity = n
           </div>
         ) : (
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-900">Edit Community</h4>
+            <h4 className="text-lg font-semibold text-[var(--fg)]">Edit Community</h4>
 
             {/* Avatar upload */}
             <div className="flex items-center gap-4">
@@ -130,11 +130,11 @@ export default function CommunityProfileCard({ communityId, initialCommunity = n
 
             {/* Action buttons */}
             <div className="flex gap-3 mt-2">
-              <button className="primary px-4 py-2 rounded-lg" onClick={save}>
+              <button className="primary px-4 py-2 rounded-lg border border-[var(--panel)]" onClick={save}>
                 Save
               </button>
               <button
-                className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-[--bg] transition-colors"
                 onClick={() => {
                   setEditing(false)
                   setName(c?.name || "")

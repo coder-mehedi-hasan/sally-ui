@@ -73,7 +73,7 @@ export default function Comments({ postId, notify, me, count = 0 }) {
                       <NavLink to={`/?user=@${(c.user_profile?.handle || c.user)}`} style={{ opacity: 0.8 }}>@{c.user_profile?.handle || c.user}</NavLink>
                       <span>• {feedFormatDate(c?.created_at)}</span>
                     </div>
-                    <p className="text text-sm">{c.text}</p>
+                    <p className="text text-sm !text-[var(--fg)]">{c.text}</p>
                   </div>
                 </div>
               )
@@ -82,7 +82,7 @@ export default function Comments({ postId, notify, me, count = 0 }) {
           </>
         )}
       </div>
-      <div className="border rounded-xl p-1" style={{ marginTop: 6, boxShadow: "0 1px 2px rgba(0, 0, 0, .2)" }}>
+      <div className="border border-[var(--border)] rounded-xl p-1" style={{ marginTop: 6, boxShadow: "0 1px 2px rgba(0, 0, 0, .2)" }}>
         <ContentBox
           value={text}
           onChange={setText}
@@ -91,6 +91,7 @@ export default function Comments({ postId, notify, me, count = 0 }) {
           border='0px'
           fontSize={14}
           minHeight={20}
+          maxHeight={160}
         />
         <div className='mx-[14px] my-3 flex justify-end'>
           <button className="primary !py-1 !px-[10px] !rounded-[10px]" onClick={add}>Comment</button>

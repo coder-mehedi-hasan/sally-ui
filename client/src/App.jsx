@@ -15,13 +15,24 @@ import GoogleAuthCallback from './components/GoogleAuthCallback.jsx'
 import { Toaster } from 'react-hot-toast';
 
 export default function App() {
-  const [theme, setTheme] = useState('light')
+  const mediaQuery = window?.matchMedia('(prefers-color-scheme: dark)');
+  const t = mediaQuery.matches ? 'dark' : 'light';
+  const [theme, setTheme] = useState(t)
   const [me, setMe] = useState(null)
   const [myProf, setMyProf] = useState(null)
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light')
+    // console.log('Theme changed:', theme)
+    const mediaQuery = window?.matchMedia('(prefers-color-scheme: dark)');
+    // Set initial theme
+    const t = mediaQuery.matches ? 'dark' : 'light';
+    if (!theme) setTheme(t)
+    document?.documentElement?.setAttribute('data-theme', theme)
   }, [theme])
+
+
+  // Set initial theme
+  document?.documentElement?.setAttribute('data-theme', t)
 
   useEffect(() => {
     verify()

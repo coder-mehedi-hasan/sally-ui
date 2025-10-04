@@ -128,7 +128,7 @@ export default function Profile() {
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[var(--primary)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-black"
+            className="block w-full cursor-pointer rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3 py-2 text-sm text-gray-700 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[var(--primary)] file:px-4 file:py-2 file:text-sm file:font-medium file:text-black"
           />
           {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
@@ -136,7 +136,7 @@ export default function Profile() {
           <img
             src={file ? URL.createObjectURL(file) : profile.avatar_url || '/logo/sally.jpg'}
             alt="avatar"
-            className="h-12 w-12 rounded-lg object-cover ring-1 ring-gray-300"
+            className="h-12 w-12 rounded-lg object-cover ring-1 ring-[var(--border)]"
           />
         </div>
       </div>

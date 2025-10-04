@@ -67,20 +67,20 @@ export default function Communities() {
           <div style={{ marginTop: 8 }}><button className="primary" onClick={create}>Create</button></div>
         </div>
         <div className="card mt-3 p-4 bg-white rounded-2xl shadow-md">
-          <h4 className="mb-3 font-semibold text-gray-900">My Communities</h4>
+          <h4 className="mb-3 font-semibold text-[var(--fg)]">My Communities</h4>
 
           <div className="space-y-3">
             {communities.map((c) => (
               <div
                 key={c.id}
-                className="flex items-start justify-between gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                className="flex items-start justify-between gap-3 p-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors"
               >
                 <NavLink
                   to={`/communities/${c.id}`}
                   className="flex-1 cursor-pointer space-y-1"
                 >
                   <div className="flex items-center justify-between">
-                    <b className="text-gray-800">{c.name}</b>
+                    <b className="text-[var(--fg)]">{c.name}</b>
                     <span className="text-xs text-gray-500">
                       • {c.member_count || 0} members • role: {c.role || "member"}
                     </span>
@@ -124,7 +124,7 @@ export default function Communities() {
             {feedItems.map(({ post, media = [], community }) => (
               <div
                 key={post.id}
-                className="feed-item p-4 bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                className="feed-item p-4 bg-[var(--bg)] rounded-xl shadow-sm border border-[var(--border)] hover:shadow-md transition-shadow"
               >
                 {/* Meta info */}
                 <div className="flex items-center flex-wrap text-xs text-gray-500 gap-1">
@@ -144,7 +144,7 @@ export default function Communities() {
                 </div>
 
                 {/* Post content */}
-                <div className="mt-2 text-gray-800">{post.text}</div>
+                <div className="mt-2 text-[var(--fg)]">{post.text}</div>
 
                 {/* Media */}
                 {media.length > 0 && (

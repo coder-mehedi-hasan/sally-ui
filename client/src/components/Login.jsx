@@ -54,8 +54,8 @@ export default function Login({ onLogin }) {
   }
 
   return (
-    <div className="card p-6 bg-white rounded-2xl shadow-md max-w-md mx-auto mt-12">
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">Welcome to Sally</h3>
+    <div className="card p-6 rounded-2xl shadow-md max-w-md mx-auto mt-12">
+      <h3 className="text-xl font-semibold text-[var(--pg)] mb-4">Welcome to Sally</h3>
 
       {/* Username + Password */}
       <div className="space-y-3">
@@ -110,7 +110,7 @@ export default function Login({ onLogin }) {
         <button
           onClick={googleOAuthSignIn}
           // disabled={!isValidEmail(devEmail)}
-          className="mt-3 w-full flex items-center justify-center gap-2 border rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className="mt-3 w-full flex items-center justify-center gap-2 border rounded-lg px-3 py-2 text-sm font-medium text-[var(--fg)] hover:bg-[var(--bg)] transition-colors disabled:opacity-50"
         >
           <FaGoogle className="text-red-500" />
           Login with Google

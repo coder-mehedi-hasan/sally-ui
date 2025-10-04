@@ -11,9 +11,5 @@
     height: 32px;
     border: 1px solid var(--border, #ddd);
     border-radius: 8px;
-    background: var(--card, #fff);
-}
-
-.uploadToolbar button:hover {
-    background: rgba(0, 0, 0, .04);
+    background: var(--bg);
 }

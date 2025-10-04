@@ -151,13 +151,13 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
 
       {/* Incoming */}
       <div className="mt-4">
-        <h5 className="text-sm font-semibold text-gray-800 mb-2">Incoming</h5>
+        <h5 className="text-sm font-semibold text-[var(--fg)] mb-2">Incoming</h5>
         <div className="space-y-2">
           {(incoming || []).slice(0, 6).map(r => (
             <div
               key={r.id}
-              className="flex items-center justify-between px-3 py-2 border
-               rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors
+              className="flex items-center justify-between px-3 py-2 border border-[var(--border)]
+               rounded-lg bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors
               owa
               "
             >
@@ -165,7 +165,7 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
               <div className="flex items-center gap-3">
                 <AvatarSmall url={r.from_profile?.avatar_url} name={r.from_profile?.display_name || r.from} />
                 <div className="flex flex-col">
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-[var(--fg)]">
                     {r.from_profile?.display_name || r.from}
                   </span>
                   <span className="text-xs text-gray-500 leading-none">
@@ -212,16 +212,16 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
 
       {/* Outgoing */}
       <div className="mt-4">
-        <h5 className="text-sm font-semibold text-gray-800 mb-2">Outgoing</h5>
+        <h5 className="text-sm font-semibold text-[var(--fg)] mb-2">Outgoing</h5>
         <div className="space-y-2">
           {(outgoing || []).slice(0, 6).map(r => (
             <div
               key={r.id}
-              className="flex items-center gap-3 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-3 px-3 py-2 border border-[var(--border)] rounded-lg bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors"
             >
               <AvatarSmall url={r.to_profile?.avatar_url} name={r.to_profile?.display_name || r.to} />
               <div className="flex flex-col">
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-[var(--fg)]">
                   {r.to_profile?.display_name || r.to}
                 </span>
                 <span className="text-xs text-gray-500 leading-none">
@@ -229,7 +229,7 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
                 </span>
               </div>
               <div
-                className={`ml-auto px-2 py-0.5 text-xs rounded-full font-medium border`}
+                className={`ml-auto px-2 py-0.5 text-xs rounded-full font-medium border border-[var(--border)]`}
                 style={{
                   background:
                     r.status === "accepted"
@@ -237,14 +237,14 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
                       : r.status === "declined"
                         ? "#fee2e2"          // light red
                         : r.status === "pending"
-                          ? "var(--bubble)"
+                          ? "var(--panel)"
                           : "var(--bubble)",
                   borderColor:
                     r.status === "accepted"
                       ? "var(--secondary)"
                       : r.status === "declined"
                         ? "#fca5a5"          // red border
-                        : "var(--bubble-border)",
+                        : "var(--border)",
                   color:
                     r.status === "accepted"
                       ? "#1a1a1a"          // dark text on primary
@@ -265,7 +265,7 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
           )}
 
           {(outgoing || []).length > 6 && (
-            <div className="text-xs text-blue-600 mt-2">
+            <div className="text-xs text-[var(--fg)] mt-2">
               <NavLink to="/friends" className="hover:underline">View all</NavLink>
             </div>
           )}
@@ -279,14 +279,14 @@ export default function FriendRequests({ visiableViewAllBtn = true, disableFrien
           onClick={onClose}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md max-h-[80vh] overflow-y-auto p-5 animate-fadeIn"
+            className="bg-[var(--panel)] rounded-2xl shadow-2xl w-[90%] max-w-md max-h-[80vh] overflow-y-auto p-5 animate-fadeIn"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="text-base font-semibold text-gray-900">My Friends</h4>
+              <h4 className="text-base font-semibold text-[var(--fg)]">My Friends</h4>
               <button
-                className="flex items-center gap-2 font-semibold text-gray-700 hover:text-red-500 transition-colors"
+                className="flex items-center gap-2 font-semibold text-[var(--fg)] hover:text-red-500 transition-colors"
                 onClick={onClose}
               >
                 <FaTimes className="text-base" /> Close
@@ -312,7 +312,7 @@ function FriendsListPopup() {
     <div>
       <div style={{ position: 'relative' }}>
         <FaSearch size={14} style={{ position: 'absolute', top: '50%', left: 8, transform: 'translateY(-50%)', opacity: 0.6 }} />
-        <input placeholder="Search friends" value={q} onChange={e => setQ(e.target.value)} style={{ paddingLeft: 28 }} />
+        <input placeholder="Search friends" value={q} onChange={e => setQ(e.target.value)} style={{ paddingLeft: 28 }} className='form-input' />
       </div>
       <div style={{ marginTop: 8 }}>
         {friends.map(f => (
@@ -331,7 +331,7 @@ function FriendsListPopup() {
 }
 
 function AvatarSmall({ url, name }) {
-  if (url) { return <img src={url} alt="" style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid #ddd' }} /> }
+  if (url) { return <img src={url} alt="" style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid var(--border)' }} /> }
   const initial = (name || '?').substring(0, 1).toUpperCase()
-  return <div className="avatar owb" style={{ width: 22, height: 22, fontSize: 11 }}>{initial}</div>
+  return <div className="avatar owb !bg-[var(--panel)]" style={{ width: 22, height: 22, fontSize: 11 }}>{initial}</div>
 }

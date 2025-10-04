@@ -45,7 +45,7 @@ export default function Circles() {
               <div className="col">
                 <input placeholder="Name" className='form-input' value={name} onChange={e => setName(e.target.value)} /></div>
               <div className="col">
-                <select value={kind} className='capitalize' onChange={e => setKind(e.target.value)}>
+                <select value={kind} className='capitalize bg-[var(--bg)] border-[var(--border)]' onChange={e => setKind(e.target.value)}>
                   <option className='capitalize'>friends</option>
                   <option className='capitalize'>neighbours</option>
                   <option className='capitalize'>office</option>
@@ -56,7 +56,7 @@ export default function Circles() {
             <div style={{ marginTop: 8 }}><button className="primary" onClick={create}>Create</button></div>
           </div>
           <div className="card mt-3 p-4 bg-white rounded-2xl shadow-md">
-            <h4 className="mb-2 font-semibold text-gray-900">My Circles</h4>
+            <h4 className="mb-2 font-semibold text-[var(--fg)]">My Circles</h4>
             <div className="space-y-2">
               {circles.map((c) => (
                 <div
@@ -66,7 +66,7 @@ export default function Circles() {
                     else pick(c);
                   }}
                   className={`flex items-center gap-2 p-2 rounded-md border transition-all cursor-pointer
-          ${sel?.id === c?.id ? "bg-indigo-100 border-indigo-300" : "bg-gray-50 hover:bg-gray-100 border-gray-200"}
+          ${sel?.id === c?.id ? "bg-[var(--bg)] border-[var(--border)]" : "bg-[var(--bg)] hover:bg-[var(--hover-bg)] border-[var(--border)]"}
         `}
                 >
                   {/* Icon */}
@@ -76,7 +76,7 @@ export default function Circles() {
 
                   {/* Circle Info */}
                   <div className="flex flex-col">
-                    <b className="text-gray-800">{c.name}</b>
+                    <b className="text-[var(--fg)]">{c.name}</b>
                     <span className="text-sm text-gray-500 leading-0">• {c.kind}</span>
                   </div>
                 </div>
@@ -87,7 +87,7 @@ export default function Circles() {
         <div className="md:col-span-3">
           <div className="card p-4 bg-white rounded-2xl shadow-md">
             {/* Header */}
-            <h4 className="mb-3 font-semibold text-gray-900">
+            <h4 className="mb-3 font-semibold text-[var(--fg)]">
               Members {sel ? `• ${sel.name}` : ""}
             </h4>
 
@@ -106,18 +106,18 @@ export default function Circles() {
                 </div>
                 {/* Search Results */}
                 {!!results.length && (
-                  <div className="search-results bg-gray-50 rounded-lg border border-gray-200 shadow-sm divide-y divide-gray-200">
+                  <div className="search-results bg-[var(--bg)] rounded-lg border border-[var(--border)] shadow-sm divide-y ">
                     {results.map((u) => (
                       <div
                         key={u.username}
-                        className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 transition-colors rounded-lg"
+                        className="flex items-center gap-2 px-3 py-2 hover:bg-[var(--hover-bg)] transition-colors rounded-lg"
                       >
                         {/* Avatar */}
                         <AvatarSmall url={u.avatar_url} name={u.display_name || u.username} />
 
                         {/* Name & Handle */}
                         <div className="flex flex-col">
-                          <span className="font-medium text-gray-800 ">
+                          <span className="font-medium text-[var(--fg)] ">
                             {u.display_name || u.username}
                           </span>
                           <span className="text-xs text-gray-500 leading-none">
@@ -144,10 +144,10 @@ export default function Circles() {
               {members.map((m) => (
                 <div
                   key={m.id}
-                  className="flex items-center gap-2 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 border border-[var(--border)] rounded-lg bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors"
                 >
                   <AvatarSmall url={m.avatar_url} name={m.member} />
-                  <span className="text-gray-800 font-medium">@{m.member}</span>
+                  <span className="text-[var(--fg)] font-medium">@{m.member}</span>
                 </div>
               ))}
 

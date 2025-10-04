@@ -33,7 +33,7 @@ export default function MyCircles({ onPick, limit = 4 }) {
               transition: 'background 0.2s',
             }}
           >
-            <p style={{ fontWeight: 600, color: '#222', fontSize: "13px" }} className='capitalize '>{c.name}</p>
+            <p style={{ fontWeight: 600, color: 'var(--fg)', fontSize: "13px" }} className='capitalize '>{c.name}</p>
             <div
               className="tag"
               style={{
@@ -58,12 +58,12 @@ export default function MyCircles({ onPick, limit = 4 }) {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            color: '#000',
+            color: 'var(--fg)',
             textDecoration: 'none',
             transition: 'color 0.2s',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = '#000')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = '#162036')}
+          // onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--fg)')}
+          // onMouseLeave={(e) => (e.currentTarget.style.color = '#162036')}
           className='text-xs font-bold'
         >
           View All <FiArrowRight size={16} />

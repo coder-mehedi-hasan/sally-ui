@@ -7,16 +7,16 @@ const ReactionsModal = ({ rxnItems, setRxnOpen, }) => {
             onClick={() => setRxnOpen(false)}
         >
             <div
-                className="bg-white  rounded-2xl shadow-2xl w-[90%] max-w-md max-h-[80vh] overflow-y-auto p-5 animate-fadeIn"
+                className="bg-[--panel]  rounded-2xl shadow-2xl w-[90%] max-w-md max-h-[80vh] overflow-y-auto p-5 animate-fadeIn"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between border-b pb-3">
-                    <h4 className="text-base font-semibold text-gray-900 ">
+                    <h4 className="text-base font-semibold text-[var(--fg)] ">
                         Reactions
                     </h4>
                     <button
-                        className="font-extrabold text-gray-900 hover:text-red-500 transition-colors"
+                        className="font-extrabold text-[var(--fg)] hover:text-red-500 transition-colors"
                         onClick={() => setRxnOpen(false)}
                     >
                         ✕
@@ -29,9 +29,9 @@ const ReactionsModal = ({ rxnItems, setRxnOpen, }) => {
                         return (
                             <div
                                 key={i}
-                                className="flex items-center justify-between bg-gray-50  px-4 py-2 rounded-lg hover:bg-gray-100  transition-colors"
+                                className="flex items-center justify-between bg-[var(--bg)]  px-4 py-2 rounded-lg hover:bg-[var(--hover-bg)]  transition-colors"
                             >
-                                <span className="text-sm text-gray-700 ">
+                                <span className="text-sm text-[var(--fg)] ">
                                     @{r.user}
                                 </span>
                                 <b className="text-base">{constant.reactions[r.type]}</b>

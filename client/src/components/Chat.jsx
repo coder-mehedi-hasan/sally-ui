@@ -274,11 +274,11 @@ export default function Chat() {
           {friendList.map(fr => (
             <div key={fr.username}
               onClick={() => loadFor(fr.username)}
-              style={{ padding: '10px 8px', cursor: 'pointer', borderRadius: 8, background: withUser === fr.username ? '#f5f5f5' : 'transparent', display: 'flex', gap: 10, alignItems: 'center', border: '1px solid #eee', marginBottom: 6 }}>
+              style={{ padding: '10px 8px', cursor: 'pointer', borderRadius: 8, background: withUser === fr.username ? 'var(--bg)' : 'var(--hover-bg)', display: 'flex', gap: 10, alignItems: 'center', border: '1px solid var(--border)', marginBottom: 6 }}>
               {fr.avatar_url ? (
                 <img src={fr.avatar_url} alt="" style={{ width: 36, height: 36, borderRadius: '50%' }} />
               ) : (
-                <div className="avatar" style={{ width: 36, height: 36, fontSize: 14 }}>
+                <div className="avatar !bg-[var(--bg)]" style={{ width: 36, height: 36, fontSize: 14 }}>
                   {(fr.display_name || fr.handle || fr.username || '?').substring(0, 1).toUpperCase()}
                 </div>
               )}
@@ -298,7 +298,7 @@ export default function Chat() {
 
       {/* Center: Thread */}
       <div className="card" style={{ flex: 1, maxWidth: 820, height: 520, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--bg)', paddingBottom: 8 }}>
           <h3 className='mb-2 font-bold' style={{ margin: 0 }}>{withUser ? `Chat with @${withUser}` : 'Select a conversation'}</h3>
           {typingPeer ? <span style={{ fontSize: 12, fontWeight: 400, color: '#666' }}>typing</span> : null}
           <div style={{ flex: 1 }} />
@@ -310,7 +310,7 @@ export default function Chat() {
           </div>
         </div>
 
-        <div ref={scrollRef} style={{ marginTop: 8, flex: 1, overflow: 'auto', border: '1px solid #eee', borderRadius: 8, padding: 12, background: '#fafafa' }}>
+        <div ref={scrollRef} className='message-box' style={{ marginTop: 8, flex: 1, overflow: 'auto', borderRadius: 8, padding: 12, }}>
           {messages.map(m => {
             const gid = dmGroupId(me, withUser || '')
             const peerReadKey = (latest[gid] || {}).peerReadKey || ''
@@ -318,12 +318,12 @@ export default function Chat() {
             const read = isMine && peerReadKey && (m.id <= peerReadKey)
             return (
               <div key={m.id} data-id={m.id} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start', margin: '8px 0' }}>
-                <div style={{ maxWidth: '70%', padding: '8px 10px', borderRadius: 10, background: isMine ? '#d7ecff' : '#fff', border: '1px solid #e5e5e5' }}>
-                  <div style={{ fontSize: 12, color: '#666', marginBottom: 2 }}>{isMine ? 'You' : '@' + m.from}</div>
-                  {!!m.text && <div style={{ whiteSpace: 'pre-wrap' }}>{m.text}</div>}
+                <div style={{ maxWidth: '70%', padding: '8px 10px', borderRadius: 10, background: isMine ? '#c9b28f' : 'var(--bg)', border: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: 12, color: 'var(--gray)', marginBottom: 2 }}>{isMine ? 'You' : '@' + m.from}</div>
+                  {!!m.text && <p style={{ whiteSpace: 'pre-wrap' }} className={isMine ? `text-[#1a1a1a]` : `text-[var(--fg)]`} >{m.text}</p>}
                   {!!(m.media && m.media.length) && <MsgMedia media={m.media} />}
                   {isMine && (
-                    <div style={{ fontSize: 11, color: read ? '#888' : '#aaa', textAlign: 'right', marginTop: 4 }}>
+                    <div style={{ fontSize: 11, color: read ? '#888' : 'var(--gray)', textAlign: 'right', marginTop: 4 }}>
                       {read ? '✅ Seen' : '✓ Delivered'}
                     </div>
                   )}

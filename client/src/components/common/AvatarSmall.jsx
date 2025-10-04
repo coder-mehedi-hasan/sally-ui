@@ -7,7 +7,7 @@ function AvatarSmall({ author, username, size = 24 }) {
     }
     // fallback initials
     const initial = (author?.display_name || author?.handle || username || '?').substring(0, 1).toUpperCase()
-    return <div className="avatar " style={{ width: size, height: size, fontSize: 12 }}>{initial}</div>
+    return <div className="avatar !bg-[var(--bg)] " style={{ width: size, height: size, fontSize: 12 }}>{initial}</div>
 }
 
 export default AvatarSmall

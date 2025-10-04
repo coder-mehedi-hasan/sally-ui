@@ -36,7 +36,7 @@ export default function FriendsPage() {
 
       {/* All Friends */}
       <div className="md:col-span-1">
-        <div className="card p-4 bg-white rounded-2xl shadow-md">
+        <div className="card p-4 rounded-2xl shadow-md">
           <h4 className="font-bold mb-2">All Friends</h4>
 
           {/* Search with icon */}
@@ -56,11 +56,11 @@ export default function FriendsPage() {
               <NavLink
                 key={f.username}
                 to={`/?user=${encodeURIComponent(f.handle || f.username)}`}
-                className="flex items-center gap-3 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-3 px-3 py-2 border rounded-lg bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors border-[var(--border)]"
               >
                 <Avatar url={f.avatar_url} name={f.display_name || f.handle || f.username} />
                 <div className="flex flex-col">
-                  <span className="font-medium text-gray-800">{f.display_name || f.username}</span>
+                  <span className="font-medium text-[var(--fg)]">{f.display_name || f.username}</span>
                   <span className="text-xs text-gray-500">@{f.handle || f.username}</span>
                 </div>
               </NavLink>
@@ -81,13 +81,13 @@ function Avatar({ url, name }) {
       <img
         src={url}
         alt=""
-        className="w-8 h-8 rounded-full border border-gray-300"
+        className="w-8 h-8 rounded-full border border-[var(--border)] object-cover"
       />
     )
   }
   const initial = (name || '?').substring(0, 1).toUpperCase()
   return (
-    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 text-xs font-medium border border-gray-300">
+    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--panel)] text-[var(--fg)] text-xs font-medium border border-[var(--border)]">
       {initial}
     </div>
   )

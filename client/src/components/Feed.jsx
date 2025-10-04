@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { NavLink } from 'react-router-dom'
 import { sally, upload } from '../lib/api.js'
 import { feedFormatDate } from '../lib/helper.js'
 import Comments from './Comments.jsx'
@@ -14,13 +16,11 @@ import ReactionBreakdown from './ReactionBreakdown.jsx'
 import Reactions from './Reactions.jsx'
 import RecentChats from './RecentChats.jsx'
 import UploadToolbar from './UploadToolbar.jsx'
-import ContentBox from './common/ContentBox.jsx'
-import constant from '../lib/constant.js'
 import AvatarSmall from './common/AvatarSmall.jsx'
+import ContentBox from './common/ContentBox.jsx'
 import MediaGrid from './common/MediaGrid.jsx'
 import ReactionsModal from './common/ReactionsModal.jsx'
-import { NavLink } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import CustomSelect from './common/CustomSelect.jsx'
 
 export default function Feed({ me }) {
   const [text, setText] = useState('')
@@ -109,7 +109,7 @@ export default function Feed({ me }) {
     return (
       <div className='card mb-3 !p-0 overflow-hidden' key={post.id}>
         <div className="feed-item">
-          <div className='bg-[var(--bg)] !p-3 !pb-2' style={{ fontSize: 12, opacity: 0.85, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className='!p-3 !pb-0' style={{ fontSize: 12, opacity: 0.85, display: 'flex', alignItems: 'center', gap: 8 }}>
             <NavLink to={`/?user=@${(author?.handle || post.author)}`}>
               <AvatarSmall size={38} author={author} username={post.author} />
             </NavLink>
@@ -159,7 +159,7 @@ export default function Feed({ me }) {
             <Reactions postId={post.id} onReact={load} my={my_reaction} />
             {
               isExpanded && (
-                <div style={{ marginTop: 12, }} className='border-t py-1'>
+                <div style={{ marginTop: 12, }} className='border-t py-1 border-[var(--border)]'>
                   <Comments count={updatedComments} me={me} postId={post.id} notify={() => { try { ws && ws.readyState === 1 && ws.send(JSON.stringify({ kind: 'comment', post_id: post.id })); setUpdatedComments(pre => pre + 1) } catch (e) { } }} />
                 </div>
               )
@@ -169,45 +169,6 @@ export default function Feed({ me }) {
       </div>
     )
   }
-
-  const PostBox = () => {
-    return (
-      <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-          <h4 style={{ margin: 0 }} className='font-bold'>Create post</h4>
-        </div>
-        <ContentBox
-          value={text}
-          onChange={setText}
-          onSubmit={post}
-          placeholder="What's new?"
-          minHeight={100}
-        />
-        {/* <textarea rows={3} placeholder="What's new?" value={text} onChange={e=>setText(e.target.value)} /> */}
-        <MediaPreviews files={files} onRemove={(i) => setFiles(f => f.filter((_, idx) => idx !== i))} />
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
-          <select className="select-dark select-compact select-sm" value={audience} onChange={e => setAudience(e.target.value)}>
-            <option value="friends">Friends</option>
-            <option value="global">Global</option>
-            <option value="circle">Circle</option>
-          </select>
-          {audience === 'circle' && (
-            <select className="select-dark select-compact select-sm" value={postCircleId} onChange={e => setPostCircleId(e.target.value)}>
-              <option value="">Select circle…</option>
-              {circles.map(c => <option key={c.id} value={c.id}>{c.name} • {c.kind}</option>)}
-            </select>
-          )}
-        </div>
-        <div className="composer-actions">
-          <UploadToolbar onFiles={(fs) => setFiles(prev => prev.concat(fs))} />
-          <button className="primary bg-[#fff]" onClick={post} disabled={loading}>
-            {loading ? <>Posting… <span className="spinner" /></> : 'Post'}
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className="layout-3col">
@@ -227,21 +188,61 @@ export default function Feed({ me }) {
         </div>
         <div className="col-main">
           <div className=''>
-            <PostBox></PostBox>
+            <div className="card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <h4 style={{ margin: 0 }} className='font-bold'>Create post</h4>
+              </div>
+              <ContentBox
+                value={text}
+                onChange={setText}
+                onSubmit={post}
+                placeholder="What's new?"
+                minHeight={100}
+              />
+              {/* <textarea rows={3} placeholder="What's new?" value={text} onChange={e=>setText(e.target.value)} /> */}
+              <MediaPreviews files={files} onRemove={(i) => setFiles(f => f.filter((_, idx) => idx !== i))} />
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
+                <select className="select-dark select-compact select-sm" value={audience} onChange={e => setAudience(e.target.value)}>
+                  <option value="friends">Friends</option>
+                  <option value="global">Global</option>
+                  <option value="circle">Circle</option>
+                </select>
+                {audience === 'circle' && (
+                  <select className="select-dark select-compact select-sm" value={postCircleId} onChange={e => setPostCircleId(e.target.value)}>
+                    <option value="">Select circle…</option>
+                    {circles.map(c => <option key={c.id} value={c.id}>{c.name} • {c.kind}</option>)}
+                  </select>
+                )}
+              </div>
+              <div className="composer-actions">
+                <UploadToolbar onFiles={(fs) => setFiles(prev => prev.concat(fs))} />
+                <button className="primary bg-[#fff]" onClick={post} disabled={loading}>
+                  {loading ? <>Posting… <span className="spinner" /></> : 'Post'}
+                </button>
+              </div>
+            </div>
           </div>
           <div className="card sidebar-sticky filter-bar pt-4 pb-[8px] z-10" id='filter-bar' style={{ marginTop: 12 }}>
             {/* Feed filter row (Friends / Global / Circle) */}
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }} className=' bg-white'>
-              <select className="select-pill select-compact" value={scope} onChange={e => setScope(e.target.value)}>
+            <div
+              style={{ display: "flex", gap: 8, alignItems: "center" }}
+              className="bg-[var(--panel)]"
+            >
+              <CustomSelect value={scope} onChange={e => setScope(e.target.value)}>
                 <option value="friends">Friends</option>
                 <option value="global">Global</option>
                 <option value="circle">Circle</option>
-              </select>
-              {scope === 'circle' && (
-                <select className="select-pill select-compact" value={circleId} onChange={e => setCircleId(e.target.value)}>
+              </CustomSelect>
+
+              {scope === "circle" && (
+                <CustomSelect value={circleId} onChange={e => setCircleId(e.target.value)}>
                   <option value="">Select circle…</option>
-                  {circles.map(c => <option key={c.id} value={c.id}>{c.name} • {c.kind}</option>)}
-                </select>
+                  {circles.map(c => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} • {c.kind}
+                    </option>
+                  ))}
+                </CustomSelect>
               )}
             </div>
           </div>

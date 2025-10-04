@@ -17,7 +17,7 @@ export default function RecentChats({ limit = 8 }) {
       <h4 className='mb-2 text-sm font-bold'>Recent chats</h4>
       <div>
         {(rows || []).slice(0, limit).map(r => (
-          <NavLink key={r.username} to={`/chat?user=@${r.username}`} style={{ display: 'block', padding: '6px 0', borderBottom: '1px solid #eee' }}>
+          <NavLink key={r.username} to={`/chat?user=@${r.username}`} style={{ display: 'block', padding: '6px 0', borderBottom: '1px solid var(--bg)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ fontWeight: 600 }}>@{r.username} {r.display_name ? `(${r.display_name})` : ''}</div>
               {r.unread > 0 && (
