@@ -107,7 +107,7 @@ export default function Feed({ me }) {
 
     const isExpanded = commentExpandedPost.has(post.id)
     return (
-      <div className='card mb-3 !p-0 overflow-hidden' key={post.id}>
+      <div className='card mb-3 !p-0 overflow-hidden'>
         <div className="feed-item">
           <div className='!p-3 !pb-0' style={{ fontSize: 12, opacity: 0.85, display: 'flex', alignItems: 'center', gap: 8 }}>
             <NavLink to={`/?user=@${(author?.handle || post.author)}`}>
@@ -251,9 +251,9 @@ export default function Feed({ me }) {
             <div>
               {!items.length && fetching && (
                 <>
-                  {[1, 2, 3].map(i => (
+                  {[1, 2, 3].map((i, idx) => (
                     <div className='card mb-3'>
-                      <div key={i} className="feed-item">
+                      <div key={"feed-post-" + i + "-" + idx} className="feed-item">
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <div className="skeleton skeleton-avatar" />
                           <div style={{ flex: 1 }}>
@@ -267,9 +267,11 @@ export default function Feed({ me }) {
                   ))}
                 </>
               )}
-              {items.map(({ post, reactions, comments, media = [], my_reaction, community, author }) => {
+              {items.map(({ post, reactions, comments, media = [], my_reaction, community, author }, idx) => {
+                // console.log(post)
                 return (
                   <FeedPost
+                    key={post.id + '-' + idx}
                     post={post}
                     reactions={reactions}
                     comments={comments}
