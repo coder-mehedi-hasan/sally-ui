@@ -19,7 +19,7 @@
             "dest": "/server/index.js"
         },
         {
-            "src": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|json)",
+            "src": "/(.*)\\.(.*)",
             "dest": "/client/dist/$1.$2"
         },
         {
