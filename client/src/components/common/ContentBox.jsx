@@ -8,7 +8,8 @@ function ContentBox({
     border = '1px solid var(--border, #ddd)',
     fontSize = 16,
     minHeight = 20,
-    maxHeight = 250
+    maxHeight = 250,
+    enterToSubmit = false
 }) {
     const ref = useRef(null)
 
@@ -25,7 +26,6 @@ function ContentBox({
     function emit() {
         const el = ref.current
         if (!el) return
-        // normalize line breaks and non-breaking spaces
         const text = el.innerText.replace(/\u00A0/g, ' ')
         onChange?.(text)
     }
@@ -35,17 +35,28 @@ function ContentBox({
     }
 
     function onPaste(e) {
-        // paste as plain text
         e.preventDefault()
         const text = (e.clipboardData || window.clipboardData).getData('text')
         document.execCommand('insertText', false, text)
     }
 
     function onKeyDown(e) {
-        // optional: Ctrl/Cmd+Enter to submit
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            e.preventDefault()
-            onSubmit?.()
+        if (enterToSubmit) {
+            // Enter → submit, Ctrl+Enter → new line
+            if (e.key === 'Enter' && !(e.ctrlKey || e.metaKey)) {
+                e.preventDefault()
+                onSubmit?.()
+            } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault()
+                // Insert line break at caret position
+                document.execCommand('insertLineBreak')
+            }
+        } else {
+            // Default behavior: Ctrl+Enter = submit
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault()
+                onSubmit?.()
+            }
         }
     }
 
@@ -59,7 +70,6 @@ function ContentBox({
             onPaste={onPaste}
             onKeyDown={onKeyDown}
             data-placeholder={placeholder || ''}
-            // styling: auto-grow until 400px, then scroll
             style={{
                 minHeight: minHeight,
                 maxHeight: maxHeight,
@@ -73,11 +83,10 @@ function ContentBox({
                 wordBreak: 'break-word',
                 fontSize: fontSize
             }}
-            className="ce-input"
+            className="w-full ce-input"
             suppressContentEditableWarning
         />
     )
 }
-
 
 export default ContentBox;

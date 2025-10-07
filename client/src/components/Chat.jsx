@@ -24,6 +24,7 @@ export default function Chat() {
   const [friends, setFriends] = useState([])
   const [latest, setLatest] = useState({})
   const [me, setMe] = useState('')
+  const [threadOpen, setThreadOpen] = useState(false)
 
   // refs to avoid stale closures inside ws handlers
   const meRef = useRef('')
@@ -194,6 +195,7 @@ export default function Chat() {
     // we no longer re-subscribe here; subscribeGroups above already covers it
     // reset unread counter in list
     setFriends(prev => prev.map(f => f.username === friend ? { ...f, unread: 0 } : f))
+    setThreadOpen(true);
   }
 
   async function load() { if (withUser) await loadFor(withUser) }
@@ -265,7 +267,7 @@ export default function Chat() {
   return (
     <div className="row" style={{ gap: 12 }}>
       {/* Left: Conversations */}
-      <div className="card" style={{ width: 320, height: 520, display: 'flex', flexDirection: 'column' }}>
+      <div className={`card ${threadOpen ? "hidden" : "flex"} md:flex w-full md:w-[320px] h-[calc(100vh-160px)] md:h-[calc(100vh-87px)]`} style={{ flexDirection: 'column' }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
           <h3 style={{ margin: 0, flex: 1 }} className='font-bold mb-2'>Messaging</h3>
         </div>
@@ -297,14 +299,19 @@ export default function Chat() {
       </div>
 
       {/* Center: Thread */}
-      <div className="card" style={{ flex: 1, maxWidth: 820, height: 520, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--bg)', paddingBottom: 8 }}>
-          <h3 className='mb-2 font-bold' style={{ margin: 0 }}>{withUser ? `Chat with @${withUser}` : 'Select a conversation'}</h3>
+      <div className={`card ${threadOpen ? "flex" : "hidden"} md:flex w-full h-[calc(100vh-160px)] md:h-[calc(100vh-87px)]`} style={{ flex: 1, maxWidth: 820, flexDirection: 'column' }}>
+        {
+          threadOpen ? (
+            <button className="primary !py-1 !px-2 mb-1 md:hidden" onClick={() => setThreadOpen(false)} style={{ alignSelf: 'flex-start' }}>← Back</button>
+          ) : null
+        }
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--bg)', paddingBottom: 8, gap: 4 }} className='flex-col md:flex-row md:justify-between'>
+          <h3 className='mb-2 font-bold w-full break-all' style={{ margin: 0 }}>{withUser ? `Chat with @${withUser}` : 'Select a conversation'}</h3>
           {typingPeer ? <span style={{ fontSize: 12, fontWeight: 400, color: '#666' }}>typing</span> : null}
-          <div style={{ flex: 1 }} />
-          <div className="row" style={{ alignItems: 'center', gap: 8 }}>
+          {/* <div style={{ flex: 1 }} /> */}
+          <div className="row w-full md:w-min" style={{ alignItems: 'center', gap: 8 }}>
             <div className="col" style={{ width: 180 }}>
-              <input className='form-input' placeholder="@friend" value={withUser} onChange={e => setWithUser(e.target.value)} />
+              <input className='form-input !py-1' placeholder="@friend" value={withUser} onChange={e => setWithUser(e.target.value)} />
             </div>
             <div><button onClick={load}>Open</button></div>
           </div>
@@ -339,25 +346,31 @@ export default function Chat() {
         <div style={{ marginTop: 8 }}>
           <MediaPreviews files={files} onRemove={(i) => setFiles(prev => prev.filter((_, idx) => idx !== i))} />
         </div>
-        <div className="row" style={{ marginTop: 8, alignItems: 'center', gap: 8 }}>
-          <UploadToolbar onFiles={(fs) => setFiles(prev => prev.concat(fs || []))} />
-          <div className="col">
-            {/* <input
+        <div className="row flex-col items-start md:flex-row md:items-center w-full" style={{ marginTop: 8, gap: 8 }}>
+          <div>
+            <UploadToolbar onFiles={(fs) => setFiles(prev => prev.concat(fs || []))} />
+          </div>
+          <div className="col w-full">
+            <div className='flex gap-2 items-end'>
+
+              {/* <input
               placeholder="Message"
               value={text}
               onChange={e => onType(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') send() }}
             /> */}
-            <ContentBox
-              onChange={onType}
-              value={text}
-              placeholder={"Messsage"}
-              onSubmit={send}
-              maxHeight={100}
-            >
-            </ContentBox>
+              <ContentBox
+                onChange={onType}
+                value={text}
+                placeholder={"Messsage"}
+                onSubmit={send}
+                maxHeight={100}
+                enterToSubmit={true}
+              >
+              </ContentBox>
+              <div><button className="primary cursor-pointer" onClick={send} disabled={!withUser || (!text.trim() && files.length === 0)}>Send</button></div>
+            </div>
           </div>
-          <div><button className="primary cursor-pointer" onClick={send} disabled={!withUser || (!text.trim() && files.length === 0)}>Send</button></div>
         </div>
       </div>
     </div>
