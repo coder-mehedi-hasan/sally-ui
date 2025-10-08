@@ -15,6 +15,7 @@ let pending = []
 const subscribers = new Set()
 let onMessage = null
 let handshakeSent = false
+let groupSent = false
 
 function wsBase() {
   return (import.meta && import.meta.env && import.meta.env.VITE_API_BASE)
@@ -46,6 +47,7 @@ function connect() {
 
   // any new connection resets handshake
   handshakeSent = false
+  groupSent = false;
 
   ws.onopen = () => {
     console.log('connected');
@@ -86,7 +88,8 @@ function connect() {
       if (CHAT_DEBUG) console.warn('[chat-ws] close', { code: ev?.code, reason: ev?.reason, wasClean: ev?.wasClean })
       if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null }
       if (flushTimer) { clearInterval(flushTimer); flushTimer = null }
-      handshakeSent = false
+      handshakeSent = false;
+      groupSent = false;
       const delay = Math.min(15000, 500 * (++tries))
       if (reconnectTimer) clearTimeout(reconnectTimer)
       reconnectTimer = setTimeout(connect, delay)
@@ -143,12 +146,17 @@ function subscribeGroups(groups) {
 function hello() {
   const token = getToken()
   const groups = Array.from(subscribers)
+  // console.log('Sending chat hello', { token: !!token, groups })
   if (!token) { if (CHAT_DEBUG) console.warn('[chat-ws] hello skipped: no token'); return }
   sendFrame({ type: 'hello', token, groups })
-  handshakeSent = true
+  handshakeSent = true;
+  if (groups?.length) groupSent = true;
+  // console.log('chat hello sent', { handshakeSent })
 }
 
-function ensureHello() { if (!handshakeSent) hello() }
+// function ensureHello() { if (!handshakeSent) hello() }
+function ensureHello() { if (!handshakeSent || !groupSent) hello() }
+// console.log('chat_ws module loaded', { handshakeSent, subscribers, HEARTBEAT_MS});
 
 export default {
   connect,
@@ -163,6 +171,7 @@ export default {
       }
     } finally { ws = null }
     handshakeSent = false
+    groupSent = false
   },
   sendFrame,
   subscribe,

@@ -80,6 +80,7 @@ export default function Chat() {
     chatWS.connect()
 
     const onFrame = (m) => {
+      // console.log('[chat] ws frame', m)
       if (m?.type === 'message') {
         const gid = m?.message?.group_id
         const idk = m?.message?.id
@@ -352,13 +353,6 @@ export default function Chat() {
           </div>
           <div className="col w-full">
             <div className='flex gap-2 items-end'>
-
-              {/* <input
-              placeholder="Message"
-              value={text}
-              onChange={e => onType(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') send() }}
-            /> */}
               <ContentBox
                 onChange={onType}
                 value={text}
