@@ -5,6 +5,7 @@ import chatWS from '../lib/chat_ws.js'
 import MediaPreviews from './MediaPreviews.jsx'
 import UploadToolbar from './UploadToolbar.jsx'
 import ContentBox from './common/ContentBox.jsx'
+import { FaArrowLeft } from "react-icons/fa6";
 
 function dmGroupId(a, b) {
   const A = String(a || '').toLowerCase()
@@ -268,7 +269,7 @@ export default function Chat() {
   return (
     <div className="row" style={{ gap: 12 }}>
       {/* Left: Conversations */}
-      <div className={`card ${threadOpen ? "hidden" : "flex"} md:flex w-full md:w-[320px] h-[calc(100vh-160px)] md:h-[calc(100vh-87px)]`} style={{ flexDirection: 'column' }}>
+      <div className={`card ${threadOpen ? "hidden" : "flex"} md:flex w-full md:w-[320px] h-[calc(100vh-210px)] md:h-[calc(100vh-87px)]`} style={{ flexDirection: 'column' }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
           <h3 style={{ margin: 0, flex: 1 }} className='font-bold mb-2'>Messaging</h3>
         </div>
@@ -300,14 +301,13 @@ export default function Chat() {
       </div>
 
       {/* Center: Thread */}
-      <div className={`card ${threadOpen ? "flex" : "hidden"} md:flex w-full h-[calc(100vh-160px)] md:h-[calc(100vh-87px)]`} style={{ flex: 1, maxWidth: 820, flexDirection: 'column' }}>
-        {
-          threadOpen ? (
-            <button className="primary !py-1 !px-2 mb-1 md:hidden" onClick={() => setThreadOpen(false)} style={{ alignSelf: 'flex-start' }}>← Back</button>
-          ) : null
-        }
+      <div className={`card ${threadOpen ? "flex" : "hidden"} md:flex w-full h-[calc(100vh-210px)] md:h-[calc(100vh-87px)]`} style={{ flex: 1, maxWidth: 820, flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--bg)', paddingBottom: 8, gap: 4 }} className='flex-col md:flex-row md:justify-between'>
-          <h3 className='mb-2 font-bold w-full break-all' style={{ margin: 0 }}>{withUser ? `Chat with @${withUser}` : 'Select a conversation'}</h3>
+          <h3 className='mb-2 font-bold w-full break-all' style={{ margin: 0 }}>{
+            threadOpen ? (
+              <button className="md:hidden px-1 text-base" onClick={() => setThreadOpen(false)} style={{ alignSelf: 'flex-start' }}><FaArrowLeft /></button>
+            ) : null
+          } {withUser ? `Chat with @${withUser}` : 'Select a conversation'}</h3>
           {typingPeer ? <span style={{ fontSize: 12, fontWeight: 400, color: '#666' }}>typing</span> : null}
           {/* <div style={{ flex: 1 }} /> */}
           <div className="row w-full md:w-min" style={{ alignItems: 'center', gap: 8 }}>
