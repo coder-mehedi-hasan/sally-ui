@@ -40,7 +40,12 @@ export const sally = {
   comment: (post_id, text, parent_id='') => call('sally_comment', { post_id, text, parent_id }),
   listComments: (post_id, skip=0, limit=50) => call('sally_listComments', { post_id, skip, limit }),
   reactionSummary: (post_id) => call('sally_reactionSummary', { post_id }),
-  listReactions: (post_id) => call('sally_listReactions', { post_id })
+  listReactions: (post_id) => call('sally_listReactions', { post_id }),
+  searchCommunities : (q, skip=0, limit=25) => call('sally_searchCommunities', { q, skip, limit }),
+  requestJoinCommunity : (community_id) => call('sally_requestJoinCommunity', { community_id }),
+  listCommunityJoinRequests : (community_id, status='', skip=0, limit=50) => call('sally_listCommunityJoinRequests', { community_id, status, skip, limit }),
+  respondJoinCommunity : (request_id, action) => call('sally_respondJoinCommunity', { request_id, action }),
+  listMyCommunityJoinRequests : (status='', skip=0, limit=50) => call('sally_listMyCommunityJoinRequests', { status, skip, limit }),
 };
 
 export async function upload(files){

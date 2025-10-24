@@ -45,7 +45,7 @@ export default defineConfig({
     emptyOutDir: true
   },
   server: {
-    port: Number(process.env.PORT || 5173),
+    port: Number(process.env.PORT || 5172),
     proxy: {
       '/api': {
         target: process.env.API_BASE || 'https://api.quarkshub.com',

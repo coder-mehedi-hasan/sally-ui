@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react'
 import { sally } from '../lib/api.js'
-
-const EMOJIS = [
-  { key: 'like', label: '👍' },
-  { key: 'love', label: '❤️' },
-  { key: 'smile', label: '😄' },
-  { key: 'party', label: '🎉' },
-]
+import constant from '../lib/constant.js'
 
 export default function ReactionBreakdown({ postId }){
   const [counts, setCounts] = useState({})
@@ -23,7 +17,7 @@ export default function ReactionBreakdown({ postId }){
       setCounts(cc)
     } catch(_){}
   })() }, [postId])
-  const parts = EMOJIS.filter(e => counts[e.key] > 0)
+  const parts = constant.EMOJIS.filter(e => counts[e.key] > 0)
   if (!parts.length) return null
   return (
     <span style={{marginLeft:6}}>

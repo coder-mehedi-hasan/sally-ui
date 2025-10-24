@@ -1,8 +1,306 @@
 import { useEffect, useRef, useState } from 'react'
-import { sally } from '../lib/api.js'
-import ContentBox from './common/ContentBox.jsx'
+import { FiCheckCircle, FiClock, FiSearch, FiSend, FiUser, FiUsers, FiXCircle } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
+import { sally } from '../lib/api.js'
 import { feedFormatDate } from '../lib/helper.js'
+import ContentBox from './common/ContentBox.jsx'
+
+
+
+function JoinRequestsPanel({ community, onChanged, primaryColor = 'var(--primary)' }) {
+  const [requests, setRequests] = useState([])
+  const [status, setStatus] = useState('pending')
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    (async () => {
+      if (!community) return
+      setLoading(true)
+      try {
+        const j = await sally.listCommunityJoinRequests(community.id, status)
+        setRequests(j.requests || [])
+      } catch {
+        setRequests([])
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [community, status])
+
+  async function respond(request_id, action) {
+    await sally.respondJoinCommunity(request_id, action)
+    onChanged && onChanged()
+    const j = await sally.listCommunityJoinRequests(community.id, status)
+    setRequests(j.requests || [])
+  }
+
+  const tabs = [
+    { key: 'pending', label: 'Pending', icon: <FiClock className="w-4 h-4" /> },
+    { key: 'accepted', label: 'Accepted', icon: <FiCheckCircle className="w-4 h-4" /> },
+    { key: 'rejected', label: 'Rejected', icon: <FiXCircle className="w-4 h-4" /> },
+  ]
+
+  return (
+    <div className="card mt-3 p-4 rounded-xl border border-[var(--border)] bg-[var(--card)]">
+      <h4 className="mb-3 font-semibold text-[var(--fg)] text-sm uppercase tracking-wide flex items-center gap-1">
+        Join Requests
+      </h4>
+
+      {/* Status Pills */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {tabs.map(t => {
+          const active = status === t.key
+          return (
+            <button
+              key={t.key}
+              onClick={() => setStatus(t.key)}
+              aria-pressed={active}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                active
+                  ? 'text-white shadow-sm'
+                  : 'bg-[var(--bg)] border-transparent text-[var(--fg)]/70 hover:bg-[var(--bg-hover)]'
+              }`}
+              style={active ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+            >
+              {t.icon} {t.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Requests */}
+      <div className="space-y-2">
+        {loading && (
+          <div className="text-sm text-gray-500 text-center py-4">Loading…</div>
+        )}
+
+        {!loading && requests.length > 0 && requests.map(r => (
+          <div
+            key={r.id}
+            className="flex items-center justify-between border-b border-[var(--border)] py-2"
+          >
+            <div className="flex items-center gap-2">
+              <FiUser className="text-gray-500" />
+              <span className="font-medium text-[var(--fg)]">@{r.user}</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span
+                className="text-xs font-semibold px-2.5 py-1 rounded-full capitalize"
+                style={
+                  r.status === 'accepted'
+                    ? { backgroundColor: '#dcfce7', color: '#166534' }
+                    : r.status === 'rejected'
+                      ? { backgroundColor: '#fee2e2', color: '#991b1b' }
+                      : { backgroundColor: '#fef9c3', color: '#854d0e' }
+                }
+              >
+                {r.status}
+              </span>
+
+              {status === 'pending' && (
+                <>
+                  <button
+                    onClick={() => respond(r.id, 'accept')}
+                    className="flex items-center gap-1 px-2 py-1 text-xs text-white rounded-md hover:opacity-90 transition"
+                    style={{ backgroundColor: primaryColor }}
+                  >
+                    <FiCheckCircle className="w-4 h-4" /> Accept
+                  </button>
+                  <button
+                    onClick={() => respond(r.id, 'reject')}
+                    className="flex items-center gap-1 px-2 py-1 text-xs bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                  >
+                    <FiXCircle className="w-4 h-4" /> Reject
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+
+        {!loading && !requests.length && (
+          <div className="text-sm text-gray-500 text-center py-4">No requests</div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function SearchCommunityPanel({ primaryColor = 'var(--primary)' }) {
+  const [q, setQ] = useState('')
+  const [results, setResults] = useState([])
+  const [joinStatus, setJoinStatus] = useState({})
+  const [loading, setLoading] = useState(false)
+
+  async function search() {
+    if (!q.trim()) return
+    setLoading(true)
+    try {
+      const j = await sally.searchCommunities(q)
+      setResults(j.communities || [])
+    } catch {
+      setResults([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function requestJoin(id) {
+    try {
+      await sally.requestJoinCommunity(id)
+      setJoinStatus(s => ({ ...s, [id]: 'requested' }))
+    } catch {
+      setJoinStatus(s => ({ ...s, [id]: 'error' }))
+    }
+  }
+
+  return (
+    <div className="card mt-3 p-4 rounded-xl border border-[var(--border)] bg-[var(--card)]">
+      <h4 className="mb-2 font-bold text-[var(--fg)] text-sm uppercase tracking-wide flex items-center gap-1">
+        <FiSearch className="w-4 h-4 opacity-70" /> Search Communities
+      </h4>
+
+      <div className="flex gap-2">
+        <input
+          className="form-input"
+          placeholder="Search by name"
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && search()}
+        />
+        <button
+          className="flex items-center gap-1 px-3 py-2 rounded-md text-sm text-[var(--fg)] hover:opacity-90 transition"
+          style={{ backgroundColor: primaryColor }}
+          onClick={search}
+        >
+          <FiSearch className="w-4 h-4" /> Search
+        </button>
+      </div>
+
+      <div className="mt-3 space-y-2">
+        {loading && <div className="text-sm text-gray-500 text-center py-4">Searching…</div>}
+        {!loading && results.length > 0 && results.map(c => (
+          <div
+            key={c.id}
+            className="flex items-center justify-between border-b border-[var(--border)] py-2"
+          >
+            <div className="flex items-center gap-2">
+              <FiUsers className="text-gray-500" />
+              <span className="font-medium text-[var(--fg)]">{c.name}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={joinStatus[c.id] === 'requested'}
+                onClick={() => requestJoin(c.id)}
+                className="flex items-center gap-1 px-3 py-1.5 text-xs text-[var(--fg)] rounded-md hover:opacity-90 transition disabled:opacity-60"
+                style={{ backgroundColor: primaryColor }}
+              >
+                <FiSend className="w-4 h-4" />
+                {joinStatus[c.id] === 'requested' ? 'Requested' : 'Join'}
+              </button>
+              {joinStatus[c.id] === 'error' && (
+                <span className="text-xs text-red-500">Error</span>
+              )}
+            </div>
+          </div>
+        ))}
+        {!loading && !results.length && (
+          <div className="text-sm text-gray-500 text-center py-4">No results</div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function MyJoinRequestsPanel({ primaryColor = 'var(--primary)' }) {
+  const [requests, setRequests] = useState([])
+  const [status, setStatus] = useState('pending')
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true)
+      try {
+        const j = await sally.listMyCommunityJoinRequests(status)
+        setRequests(j.requests || [])
+      } catch {
+        setRequests([])
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [status])
+
+  const tabs = [
+    { key: 'pending', label: 'Pending', icon: <FiClock className="w-4 h-4" /> },
+    { key: 'accepted', label: 'Accepted', icon: <FiCheckCircle className="w-4 h-4" /> },
+    { key: 'rejected', label: 'Rejected', icon: <FiXCircle className="w-4 h-4" /> }
+  ]
+
+  return (
+    <div className="card mt-3 p-4 rounded-xl border border-[var(--border)] bg-[var(--card)]">
+      <h4 className="mb-3 font-semibold text-[var(--fg)] text-sm uppercase tracking-wide flex items-center gap-1">
+        <FiUsers className="w-4 h-4 opacity-70" /> My Community Join Requests
+      </h4>
+
+      {/* Status Pills */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {tabs.map(t => {
+          const active = status === t.key
+          return (
+            <button
+              key={t.key}
+              onClick={() => setStatus(t.key)}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                active
+                  ? 'text-white shadow-sm'
+                  : 'bg-[var(--bg)] border-transparent text-[var(--fg)]/70 hover:bg-[var(--bg-hover)]'
+              }`}
+              style={active ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+            >
+              {t.icon} {t.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Requests */}
+      <div className="space-y-2">
+        {loading && (
+          <div className="text-sm text-gray-500 text-center py-4">Loading…</div>
+        )}
+
+        {!loading && requests.length > 0 && requests.map(r => (
+          <div
+            key={r.id}
+            className="flex items-center justify-between border-b border-[var(--border)] py-2"
+          >
+            <span className="font-medium text-[var(--fg)]">{r.community_name}</span>
+
+            <span
+              className="text-xs font-semibold px-2.5 py-1 rounded-full capitalize"
+              style={
+                r.status === 'accepted'
+                  ? { backgroundColor: '#dcfce7', color: '#166534' }
+                  : r.status === 'rejected'
+                    ? { backgroundColor: '#fee2e2', color: '#991b1b' }
+                    : { backgroundColor: '#fef9c3', color: '#854d0e' }
+              }
+            >
+              {r.status}
+            </span>
+          </div>
+        ))}
+
+        {!loading && !requests.length && (
+          <div className="text-sm text-gray-500 text-center py-4">No requests</div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 
 export default function Communities() {
   const [communities, setCommunities] = useState([])
@@ -118,6 +416,9 @@ export default function Communities() {
         <div style={{ height: 12 }} />
       </div>
       <div className="md:col-span-1">
+        <SearchCommunityPanel />
+        <MyJoinRequestsPanel />
+        <div style={{ height: 12 }} />
         <div className="card">
           <h4 className='mb-2 font-bold'>Community Posts</h4>
           <div className="space-y-4 mt-2">
@@ -191,6 +492,9 @@ export default function Communities() {
         </div>
         {sel && sel.role === 'owner' && (
           <OwnershipPanel community={sel} onChanged={load} />
+        )}
+        {sel && sel.role === 'owner' && (
+          <JoinRequestsPanel community={sel} onChanged={load} />
         )}
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { FiCheckCircle, FiSearch, FiUser, FiXCircle } from "react-icons/fi"
 import { NavLink, useParams } from 'react-router-dom'
 import { auth, sally, upload } from '../lib/api.js'
 import { feedFormatDate } from '../lib/helper.js'
@@ -11,8 +12,9 @@ import UploadToolbar from './UploadToolbar.jsx'
 import AvatarSmall from './common/AvatarSmall.jsx'
 import ContentBox from './common/ContentBox.jsx'
 import MediaGrid from './common/MediaGrid.jsx'
-import ReactionsModal from './common/ReactionsModal.jsx';
-import { FiSearch } from "react-icons/fi"
+import ReactionsModal from './common/ReactionsModal.jsx'
+import { FiClock } from 'react-icons/fi'
+
 
 
 export default function CommunityFeed() {
@@ -234,6 +236,9 @@ export default function CommunityFeed() {
           </div>
         </div>
         <div className="col-right sidebar-sticky">
+          {/* Community Join Requests Panel for Owners */}
+          <CommunityJoinRequestsPanel communityId={communityId} role={role} />
+          <div style={{ height: 12 }} />
           <div className="card p-4 bg-white rounded-2xl shadow-md">
             {/* Header */}
             <h4 className="mb-2 font-semibold text-[var(--fg)]">
@@ -318,5 +323,137 @@ export default function CommunityFeed() {
         <ReactionsModal rxnItems={rxnItems} setRxnOpen={setRxnOpen}></ReactionsModal>
       )}
     </>
+  )
+}
+
+
+
+/**
+ * Props:
+ * - communityId: string
+ * - role: 'owner' | 'admin' | 'moderator' | 'member'
+ * - primaryColor?: string (optional, e.g. '#79bb24')
+ */
+function CommunityJoinRequestsPanel({ communityId, role, primaryColor = 'var(--primary)' }) {
+  const [requests, setRequests] = useState([])
+  const [status, setStatus] = useState('pending')
+  const [loading, setLoading] = useState(false)
+
+  async function load() {
+    if (!communityId) return
+    setLoading(true)
+    try {
+      const j = await sally.listCommunityJoinRequests(communityId, status);
+      setRequests(j.requests || [])
+    } catch {
+      setRequests([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { load() }, [communityId, status]) // eslint-disable-line
+
+  async function respond(request_id, action) {
+    try {
+      await sally.respondJoinCommunity(request_id, action)
+      await load()
+    } catch { }
+  }
+
+  if (role !== 'owner') return null
+
+  const tabs = [
+    { key: 'pending', label: 'Pending', icon: <FiClock className="w-4 h-4" /> },
+    { key: 'accepted', label: 'Accepted', icon: <FiCheckCircle className="w-4 h-4" /> },
+    { key: 'rejected', label: 'Rejected', icon: <FiXCircle className="w-4 h-4" /> }
+  ]
+
+  return (
+    <div className="card">
+      <h4 className="mb-2 font-bold">
+        Join Requests
+      </h4>
+
+      {/* Status Pills */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {tabs.map(t => {
+          const active = status === t.key
+          return (
+            <button
+              key={t.key}
+              onClick={() => setStatus(t.key)}
+              aria-pressed={active}
+              className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all border
+                ${active
+                  ? 'text-white shadow-sm'
+                  : 'bg-[var(--bg)] border-transparent'
+                }`}
+              style={active ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
+            >
+              {t.icon} {t.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Requests */}
+      <div className="space-y-3">
+        {loading && (
+          <div className="text-sm text-gray-500 dark:text-gray-400 py-6 text-center">Loading…</div>
+        )}
+
+        {!loading && requests.length > 0 && requests.map(r => (
+          <div
+            key={r.id}
+            className="p-3 rounded-lg border bg-[var(--bg)] "
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FiUser className="w-5 h-5 text-gray-500" />
+                <span className="font-medium text-[var(--fg)]">@{r.user}</span>
+              </div>
+
+              <span
+                className="text-xs font-semibold px-2.5 py-1 rounded-full capitalize"
+                style={
+                  r.status === 'accepted'
+                    ? { backgroundColor: '#dcfce7', color: '#166534' } // green
+                    : r.status === 'rejected'
+                      ? { backgroundColor: '#fee2e2', color: '#991b1b' } // red
+                      : { backgroundColor: '#fef9c3', color: '#854d0e' }   // amber
+                }
+              >
+                {r.status}
+              </span>
+            </div>
+
+            {status === 'pending' && (
+              <div className="flex justify-end mt-3 gap-2">
+                <button
+                  onClick={() => respond(r.id, 'accept')}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm text-white rounded-md hover:opacity-95 transition"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  <FiCheckCircle className="w-4 h-4" /> Accept
+                </button>
+                <button
+                  onClick={() => respond(r.id, 'reject')}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+                >
+                  <FiXCircle className="w-4 h-4" /> Reject
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {!loading && !requests.length && (
+          <div className="text-sm text-gray-500 dark:text-gray-400 text-center py-6">
+            No requests found
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
