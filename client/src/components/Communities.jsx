@@ -1,11 +1,127 @@
 import { useEffect, useRef, useState } from 'react'
+import toast from "react-hot-toast"
 import { FiCheckCircle, FiClock, FiSearch, FiSend, FiUser, FiUsers, FiXCircle } from 'react-icons/fi'
+import { HiOutlineDotsVertical } from "react-icons/hi"
 import { NavLink } from 'react-router-dom'
 import { sally } from '../lib/api.js'
 import { feedFormatDate } from '../lib/helper.js'
 import ContentBox from './common/ContentBox.jsx'
 
 
+const CommunityList = ({ communities, load }) => {
+  const [openMenu, setOpenMenu] = useState(null);
+
+  const handleCopyLink = (community) => {
+    const link = `${window.location.origin}/communities/${community.id}?invite_at=${encodeURIComponent(community.name?.replace(/\s+/g, '-').toLowerCase() || community.id)}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Invite link copied!");
+    setOpenMenu(null);
+  };
+
+  const handleInvite = (id) => {
+    toast.success("Invite dialog opened!");
+    setOpenMenu(null);
+  };
+
+  const handleVisibility = async (community) => {
+    try {
+      let res;
+      if (community.is_private == true) {
+        res = await sally.makeCommunityPublic(community.id);
+        toast.success("Community is now public!");
+      } else {
+        res = await sally.makeCommunityPrivate(community.id);
+        toast.success("Community is now private!");
+      }
+
+      console.log({ res })
+      load();
+    } catch (error) {
+      toast.error("Failed to change community visibility.");
+    }
+    setOpenMenu(null);
+  }
+
+  return (
+    <div className="space-y-2">
+      {communities.map((c) => (
+        <div
+          key={c.id}
+          className="relative flex items-start justify-between gap-3 p-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors"
+        >
+          <NavLink
+            to={`/communities/${c.id}`}
+            className="flex-1 cursor-pointer space-y-1"
+          >
+            <div className="flex items-center justify-between">
+              <b className="text-[var(--fg)]">{c.name}</b>
+              <span className="text-xs text-gray-500">
+                • {c.member_count || 0} members • role: {c.role || "member"}
+              </span>
+            </div>
+            <div className="text-sm text-gray-600 truncate">{c.about}</div>
+          </NavLink>
+
+          <div className="flex items-center gap-2">
+            {c.role !== "owner" && (
+              <button
+                className="text-sm px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors"
+                onClick={async () => {
+                  await sally.leaveCommunity(c.id);
+                  load();
+                }}
+              >
+                Leave
+              </button>
+            )}
+
+            {/* 3-dot menu button */}
+            <div className="relative">
+              <button
+                onClick={() =>
+                  setOpenMenu(openMenu === c.id ? null : c.id)
+                }
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <HiOutlineDotsVertical className="text-gray-600" />
+              </button>
+
+              <div
+                className={`absolute right-0 mt-2 w-44 rounded-lg border border-gray-200 bg-white shadow-md overflow-hidden z-20 transform origin-top-right transition-all duration-200 ${openMenu === c.id
+                  ? "opacity-100 scale-100 translate-y-0"
+                  : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
+                  }`}
+              >
+                {/* <button
+                  onClick={() => handleInvite(c.id)}
+                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+                >
+                  Invite Member
+                </button> */}
+                <button
+                  onClick={() => handleCopyLink(c)}
+                  className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+                >
+                  Copy Invite Link
+                </button>
+                {
+                  c.role === "owner" && (
+                    <button
+                      onClick={() => handleVisibility(c)}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+                    >
+                      {c?.is_private == true ? 'Make Public' : 'Make Private'}
+                    </button>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 function JoinRequestsPanel({ community, onChanged, primaryColor = 'var(--primary)' }) {
   const [requests, setRequests] = useState([])
@@ -55,11 +171,10 @@ function JoinRequestsPanel({ community, onChanged, primaryColor = 'var(--primary
               key={t.key}
               onClick={() => setStatus(t.key)}
               aria-pressed={active}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
-                active
-                  ? 'text-white shadow-sm'
-                  : 'bg-[var(--bg)] border-transparent text-[var(--fg)]/70 hover:bg-[var(--bg-hover)]'
-              }`}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${active
+                ? 'text-white shadow-sm'
+                : 'bg-[var(--bg)] border-transparent text-[var(--fg)]/70 hover:bg-[var(--bg-hover)]'
+                }`}
               style={active ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
             >
               {t.icon} {t.label}
@@ -252,11 +367,10 @@ function MyJoinRequestsPanel({ primaryColor = 'var(--primary)' }) {
             <button
               key={t.key}
               onClick={() => setStatus(t.key)}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
-                active
-                  ? 'text-white shadow-sm'
-                  : 'bg-[var(--bg)] border-transparent text-[var(--fg)]/70 hover:bg-[var(--bg-hover)]'
-              }`}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all border ${active
+                ? 'text-white shadow-sm'
+                : 'bg-[var(--bg)] border-transparent text-[var(--fg)]/70 hover:bg-[var(--bg-hover)]'
+                }`}
               style={active ? { backgroundColor: primaryColor, borderColor: primaryColor } : {}}
             >
               {t.icon} {t.label}
@@ -368,37 +482,7 @@ export default function Communities() {
           <h4 className="mb-3 font-semibold text-[var(--fg)]">My Communities</h4>
 
           <div className="space-y-3">
-            {communities.map((c) => (
-              <div
-                key={c.id}
-                className="flex items-start justify-between gap-3 p-3 rounded-lg border border-[var(--border)] bg-[var(--bg)] hover:bg-[var(--hover-bg)] transition-colors"
-              >
-                <NavLink
-                  to={`/communities/${c.id}`}
-                  className="flex-1 cursor-pointer space-y-1"
-                >
-                  <div className="flex items-center justify-between">
-                    <b className="text-[var(--fg)]">{c.name}</b>
-                    <span className="text-xs text-gray-500">
-                      • {c.member_count || 0} members • role: {c.role || "member"}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-600 truncate">{c.about}</div>
-                </NavLink>
-
-                {c.role !== "owner" && (
-                  <button
-                    className="text-sm px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors"
-                    onClick={async () => {
-                      await sally.leaveCommunity(c.id);
-                      load();
-                    }}
-                  >
-                    Leave
-                  </button>
-                )}
-              </div>
-            ))}
+            <CommunityList communities={communities} sally={sally} load={load} />
 
             {!communities.length && (
               <div className="text-sm text-gray-500 text-center py-4">

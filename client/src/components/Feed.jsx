@@ -143,7 +143,7 @@ export default function Feed({ me }) {
             )}
             <div style={{ marginTop: 12, fontSize: 12, opacity: 0.7 }}>
               <span className='hover:underline cursor-pointer' onClick={(e) => { e.preventDefault(); showReactions(post.id) }}>{reactions} reactions</span>
-              <ReactionBreakdown postId={post.id} />
+              {/* <ReactionBreakdown postId={post.id} /> */}
               {" "}• <span className='hover:underline cursor-pointer' onClick={() => {
                 setCommentExpandedPost(pre => {
                   const nSet = new Set(pre)

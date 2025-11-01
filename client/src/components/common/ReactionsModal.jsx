@@ -34,7 +34,10 @@ const ReactionsModal = ({ rxnItems, setRxnOpen, }) => {
                                 <span className="text-sm text-[var(--fg)] ">
                                     @{r.user}
                                 </span>
-                                <b className="text-base">{constant.reactions[r.type]}</b>
+                                <b
+                                    className="text-base"
+                                    dangerouslySetInnerHTML={{ __html: constant.reactions[r.type] }}
+                                />
                             </div>
                         )
                     })}

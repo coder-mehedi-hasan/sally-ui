@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { FiCheckCircle, FiSearch, FiUser, FiXCircle } from "react-icons/fi"
-import { NavLink, useParams } from 'react-router-dom'
+import { FiCheckCircle, FiSearch, FiSend, FiUser, FiXCircle } from "react-icons/fi"
+import { NavLink, useParams, useSearchParams } from 'react-router-dom'
 import { auth, sally, upload } from '../lib/api.js'
 import { feedFormatDate } from '../lib/helper.js'
 import Comments from './Comments.jsx'
@@ -14,14 +14,19 @@ import ContentBox from './common/ContentBox.jsx'
 import MediaGrid from './common/MediaGrid.jsx'
 import ReactionsModal from './common/ReactionsModal.jsx'
 import { FiClock } from 'react-icons/fi'
+import toast from 'react-hot-toast'
+import LoadingScreen from './LoadingScreen.jsx'
 
 
 
 export default function CommunityFeed() {
-  const { id } = useParams()
+  const { id } = useParams();
+  const searchParams = useSearchParams()[0];
+  const communityName = searchParams.get('invite_at') || '';
   const communityId = id
   const [community, setCommunity] = useState(null)
-  const [role, setRole] = useState('member')
+  const [role, setRole] = useState('member');
+  const [joinStatus, setJoinStatus] = useState(null);
   const [items, setItems] = useState([])
   const [text, setText] = useState('')
   const [files, setFiles] = useState([])
@@ -32,6 +37,7 @@ export default function CommunityFeed() {
   const [ws, setWs] = useState(null)
   const [me, setMe] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isValidMember, setIsValidMember] = useState(true)
   const [skip, setSkip] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [fetching, setFetching] = useState(false)
@@ -113,6 +119,17 @@ export default function CommunityFeed() {
     try { const j = await sally.listReactions(postId); setRxnItems(j.reactions || []); setRxnOpen(true) } catch (e) { }
   }
 
+  async function requestJoin(id) {
+    try {
+      await sally.requestJoinCommunity(id)
+      setJoinStatus("requested")
+    } catch (e) {
+      // console.log();
+      toast.error(e.message)
+      setJoinStatus("error")
+    }
+  }
+
   const FeedPost = ({ post, reactions, comments, media = [], my_reaction, author }) => {
     const [updatedComments, setUpdatedComments] = useState(comments);
     const isExpanded = commentExpandedPost.has(post.id);
@@ -191,11 +208,53 @@ export default function CommunityFeed() {
     )
   }
 
+
+  if (isValidMember === false) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-full max-w-md p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg)] shadow-sm text-center">
+          <h4 className="text-lg font-semibold text-[var(--fg)] capitalize mb-2">
+            {communityName?.replaceAll("-", " ")}
+          </h4>
+
+          <p className="text-sm text-[--gray] mb-5 leading-relaxed">
+            You are not a member of this community yet.
+            Join now to view posts, interact, and participate in discussions.
+          </p>
+
+          <div className="flex items-center justify-center gap-3">
+            <button
+              disabled={joinStatus === "requested"}
+              onClick={() => requestJoin(id)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md text-[--fg] transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: "var(--primary)",
+              }}
+            >
+              <FiSend className="w-4 h-4" />
+              {joinStatus === "requested" ? "Request Sent" : "Join Community"}
+            </button>
+
+            {joinStatus === "error" && (
+              <span className="text-xs text-red-500 font-medium">
+                Something went wrong
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
   return (
     <>
+      {
+        loading || fetching ? <LoadingScreen /> : null
+      }
       <div className="layout-3col">
         <div className="col-left sidebar-sticky">
-          <CommunityProfileCard communityId={communityId} initialCommunity={community} initialRole={role} />
+          <CommunityProfileCard communityId={communityId} initialCommunity={community} initialRole={role} setIsValidMember={setIsValidMember} />
         </div>
         <div className="col-main">
           <div className="card">

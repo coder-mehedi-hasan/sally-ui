@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { sally, upload } from '../lib/api.js'
 
-export default function CommunityProfileCard({ communityId, initialCommunity = null, initialRole = '' }) {
+export default function CommunityProfileCard({ communityId, initialCommunity = null, initialRole = '', setIsValidMember }) {
   const [c, setC] = useState(null)
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState('')
@@ -28,6 +28,7 @@ export default function CommunityProfileCard({ communityId, initialCommunity = n
           setName(j.community.name || '')
           setAbout(j.community.about || '')
           setAvatar(j.community.avatar_url || '')
+          setIsValidMember && setIsValidMember(j.community.is_valid_member || false)
         }
       } catch (e) { }
     } catch (e) { }
