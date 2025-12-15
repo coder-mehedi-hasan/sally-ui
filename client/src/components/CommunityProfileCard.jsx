@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { sally, upload } from '../lib/api.js'
+import { uploadMultipleToCloudinary } from '../lib/cloudinary.js'
 
 export default function CommunityProfileCard({ communityId, initialCommunity = null, initialRole = '', setIsValidMember }) {
   const [c, setC] = useState(null)
@@ -46,7 +47,7 @@ export default function CommunityProfileCard({ communityId, initialCommunity = n
 
   async function pickAvatar(files) {
     if (!files || !files.length) return
-    const res = await upload(files)
+    const res = await uploadMultipleToCloudinary(files)
     const url = res[0]?.url || ''
     setAvatar(url)
   }

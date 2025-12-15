@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { sally, upload } from '../lib/api.js'
 import { toast } from 'react-hot-toast'
+import { sally } from '../lib/api.js'
+import { uploadMultipleToCloudinary } from '../lib/cloudinary.js'
 
 export default function Profile() {
   const [profile, setProfile] = useState({ display_name: '', handle: '', bio: '', avatar_url: '' })
@@ -27,7 +28,7 @@ export default function Profile() {
           setSaving(false)
           return
         }
-        const up = await upload([file])
+        const up = await uploadMultipleToCloudinary([file])
         if (up && up[0]) avatar_url = up[0].url
       }
 

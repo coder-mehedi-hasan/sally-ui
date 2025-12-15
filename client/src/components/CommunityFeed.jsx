@@ -16,6 +16,7 @@ import ReactionsModal from './common/ReactionsModal.jsx'
 import { FiClock } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 import LoadingScreen from './LoadingScreen.jsx'
+import { uploadMultipleToCloudinary } from '../lib/cloudinary.js'
 
 
 
@@ -105,7 +106,7 @@ export default function CommunityFeed() {
     let media = []
     try {
       setLoading(true)
-      if (files.length) media = await upload(files)
+      if (files.length) media = await uploadMultipleToCloudinary(files)
       await sally.createPost({ text, media, community_id: communityId })
     } finally {
       setLoading(false)

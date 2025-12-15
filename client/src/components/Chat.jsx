@@ -1,11 +1,13 @@
 // Chat.jsx
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { auth, sally, upload } from '../lib/api.js'
+import { FaArrowLeft } from "react-icons/fa6"
+import { auth, sally } from '../lib/api.js'
 import chatWS from '../lib/chat_ws.js'
+import { uploadMultipleToCloudinary } from '../lib/cloudinary.js'
 import MediaPreviews from './MediaPreviews.jsx'
 import UploadToolbar from './UploadToolbar.jsx'
 import ContentBox from './common/ContentBox.jsx'
-import { FaArrowLeft } from "react-icons/fa6";
+import MsgMedia from './common/MsgMedia.jsx'
 
 function dmGroupId(a, b) {
   const A = String(a || '').toLowerCase()
@@ -207,7 +209,7 @@ export default function Chat() {
     const gid = dmGroupId(me, withUser)
     let media = []
     try {
-      if (files.length) media = await upload(files)
+      if (files.length) media = await uploadMultipleToCloudinary(files)
     } catch (e) { }
     chatWS.sendFrame({ type: 'message', group_id: gid, text, media })
     setText('')
@@ -367,56 +369,6 @@ export default function Chat() {
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-
-function MsgMedia({ media }) {
-  const imgs = (media || []).filter(m => (m.mime || '').startsWith('image'))
-  const others = (media || []).filter(m => !(m.mime || '').startsWith('image'))
-  const [openIdx, setOpenIdx] = useState(-1)
-  const open = openIdx >= 0 ? (imgs[openIdx]?.url || '') : ''
-
-  useEffect(() => {
-    function onKey(e) {
-      if (openIdx < 0) return
-      if (e.key === 'Escape') setOpenIdx(-1)
-      else if (e.key === 'ArrowLeft') setOpenIdx(i => (i - 1 + imgs.length) % imgs.length)
-      else if (e.key === 'ArrowRight') setOpenIdx(i => (i + 1) % imgs.length)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [openIdx, imgs.length])
-
-  if (!media || !media.length) return null
-  return (
-    <div style={{ marginTop: 6, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: 8 }}>
-      {imgs.map((m, i) => (
-        <div key={'img' + i} className="zoom-wrap" style={{ width: 96, height: 96, border: '1px solid #eee', borderRadius: 8, overflow: 'hidden', background: '#fafafa', cursor: 'zoom-in' }} onClick={() => setOpenIdx(i)}>
-          <img src={m.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          <span className="zoom-icon">🔍</span>
-        </div>
-      ))}
-      {others.map((m, i) => (
-        <a key={'file' + i} href={m.url} target="_blank" rel="noreferrer" className="preview-chip" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <span>{(m.kind || m.mime || 'file')}</span> ↗
-        </a>
-      ))}
-
-      {open && (
-        <div className="lightbox-backdrop" onClick={() => setOpenIdx(-1)}>
-          <button className="lightbox-close" onClick={() => setOpenIdx(-1)}>Close ✕</button>
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <img src={open} alt="" />
-            {imgs.length > 1 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-                <button onClick={(e) => { e.stopPropagation(); setOpenIdx((i) => (i - 1 + imgs.length) % imgs.length) }}>◀ Prev</button>
-                <button onClick={(e) => { e.stopPropagation(); setOpenIdx((i) => (i + 1) % imgs.length) }}>Next ▶</button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
